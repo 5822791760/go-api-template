@@ -33,11 +33,9 @@ func main() {
 
 	fmt.Println()
 	fmt.Println("======================================")
-	fmt.Println("======================================")
 	fmt.Println("")
 	fmt.Println("Listening to port 8080")
 	fmt.Println("")
-	fmt.Println("======================================")
 	fmt.Println("======================================")
 	fmt.Println()
 
