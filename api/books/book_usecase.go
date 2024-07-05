@@ -6,6 +6,7 @@ import (
 
 	. "github.com/5822791760/go-api-template/.gen/postgres/public/table"
 	"github.com/5822791760/go-api-template/api/books/responses"
+	"github.com/5822791760/go-api-template/constants"
 	"github.com/5822791760/go-api-template/helpers"
 
 	. "github.com/go-jet/jet/v2/postgres"
@@ -23,9 +24,7 @@ func NewBookUseCase(db *sql.DB, bookService *BookService) *BookUseCase {
 	}
 }
 
-func (u *BookUseCase) GetBooks() ([]responses.GetBooksResponse, helpers.IErrResponse) {
-	books := []responses.GetBooksResponse{}
-
+func (u *BookUseCase) GetBooks(res *[]responses.GetBooksResponse) helpers.IErrResponse {
 	stmt := SELECT(
 		Books.ID.AS("GetBooksResponse.ID"),
 		Books.Name.AS("GetBooksResponse.Name"),
@@ -34,9 +33,9 @@ func (u *BookUseCase) GetBooks() ([]responses.GetBooksResponse, helpers.IErrResp
 		Authors.Name.AS("author.Name"),
 	).FROM(Books.LEFT_JOIN(Authors, Authors.ID.EQ(Books.AuthorID)))
 
-	if err := stmt.Query(u.db, &books); err != nil {
-		return nil, helpers.NewErr(err, "BAD_QUERY", http.StatusInternalServerError)
+	if err := stmt.Query(u.db, res); err != nil {
+		return helpers.NewErr(err, constants.ErrQuery, http.StatusInternalServerError)
 	}
 
-	return books, nil
+	return nil
 }
