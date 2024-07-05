@@ -1,9 +1,12 @@
 package initials
 
 import (
+	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/5822791760/go-api-template/config"
+	"github.com/go-jet/jet/v2/postgres"
 )
 
 func InitDB() (*sql.DB, error) {
@@ -11,6 +14,25 @@ func InitDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	postgres.SetQueryLogger(func(ctx context.Context, queryInfo postgres.QueryInfo) {
+		// sql, args := queryInfo.Statement.Sql()
+		// fmt.Printf("- SQL: %s Args: %v \n\n", sql, args)
+		fmt.Printf("\n++++++++++++++++++++++++++++++++\n")
+		fmt.Printf("%s \n", queryInfo.Statement.DebugSql())
+	
+		// Depending on how the statement is executed, RowsProcessed is:
+		//   - Number of rows returned for Query() and QueryContext() methods
+		//   - RowsAffected() for Exec() and ExecContext() methods
+		//   - Always 0 for Rows() method.
+		fmt.Printf("- Rows processed: %d\n", queryInfo.RowsProcessed)
+		fmt.Printf("- Duration %s\n", queryInfo.Duration.String())
+		fmt.Printf("- Execution error: %v\n", queryInfo.Err)
+	
+		callerFile, callerLine, callerFunction := queryInfo.Caller()
+		fmt.Printf("- Caller file: %s, line: %d, function: %s\n\n", callerFile, callerLine, callerFunction)
+		fmt.Printf("++++++++++++++++++++++++++++++++\n\n")
+	})
 
 	return db, nil
 }

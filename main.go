@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/5822791760/go-api-template/config"
 	"github.com/5822791760/go-api-template/initials"
 	_ "github.com/lib/pq"
 
@@ -14,8 +13,7 @@ import (
 )
 
 func main() {
-	// Load Config
-	if err := config.LoadConfig(); err != nil {
+	if err := initials.InitConfig(); err != nil {
 		log.Fatalf("Error reading config file: %s", err)
 		return
 	}
@@ -33,9 +31,11 @@ func main() {
 
 	initials.InitRoutes(r, db)
 
+	const Port = 8080
+
 	fmt.Printf("\n======================================\n\n")
-	fmt.Printf("Listening to port 8080")
+	fmt.Printf("Listening to port %d", Port)
 	fmt.Printf("\n\n======================================\n\n")
 
-	log.Fatal(http.ListenAndServe(":8080", r))
+	http.ListenAndServe(fmt.Sprintf(":%d", Port), r)
 }
