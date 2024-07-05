@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -9,7 +10,17 @@ import (
 )
 
 func URLIntParam(r *http.Request, id *int64) errs.ErrRenderer {
-	paramsId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	paramReq := chi.URLParam(r, "id")
+
+	if paramReq == "" {
+		return errs.ErrRender{
+			StatusText: errs.ErrParamNotFound,
+			Code:       http.StatusBadRequest,
+			ErrorText:  "Params id not found",
+		}
+	}
+
+	paramId, err := strconv.Atoi(paramReq)
 	if err != nil {
 		return errs.ErrRender{
 			StatusText: errs.ErrGeneric,
@@ -18,18 +29,18 @@ func URLIntParam(r *http.Request, id *int64) errs.ErrRenderer {
 		}
 	}
 
-	*id = int64(paramsId)
+	*id = int64(paramId)
 
 	return nil
 }
 
-func URLParam(r *http.Request, param *string) errs.ErrRenderer {
-	paramReq := chi.URLParam(r, "id")
+func URLParam(r *http.Request, key string, param *string) errs.ErrRenderer {
+	paramReq := chi.URLParam(r, key)
 	if paramReq == "" {
 		return errs.ErrRender{
-			StatusText: errs.ErrGeneric,
+			StatusText: errs.ErrParamNotFound,
 			Code:       http.StatusBadRequest,
-			ErrorText:  "Wrong Params",
+			ErrorText:  fmt.Sprintf("Params %s not found", key),
 		}
 	}
 
