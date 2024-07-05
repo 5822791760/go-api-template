@@ -1,4 +1,4 @@
-package reserrors
+package errs
 
 import (
 	"net/http"

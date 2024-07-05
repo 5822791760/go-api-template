@@ -6,7 +6,7 @@ import (
 
 	. "github.com/5822791760/go-api-template/.gen/postgres/public/table"
 	"github.com/5822791760/go-api-template/api/books/responses"
-	"github.com/5822791760/go-api-template/libs/reserrors"
+	"github.com/5822791760/go-api-template/libs/errs"
 
 	. "github.com/go-jet/jet/v2/postgres"
 )
@@ -23,7 +23,7 @@ func NewBookUseCase(db *sql.DB, bookService *BookService) *BookUseCase {
 	}
 }
 
-func (u *BookUseCase) GetBooks(res *[]responses.GetBooksResponse) reserrors.ErrRenderer {
+func (u *BookUseCase) GetBooks(res *[]responses.GetBooksResponse) errs.ErrRenderer {
 	stmt := SELECT(
 		Books.ID.AS("GetBooksResponse.ID"),
 		Books.Name.AS("GetBooksResponse.Name"),
@@ -33,7 +33,7 @@ func (u *BookUseCase) GetBooks(res *[]responses.GetBooksResponse) reserrors.ErrR
 	).FROM(Books.LEFT_JOIN(Authors, Authors.ID.EQ(Books.AuthorID)))
 
 	if err := stmt.Query(u.db, res); err != nil {
-		return reserrors.NewErr(err, reserrors.ErrQuery, http.StatusInternalServerError)
+		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
 	}
 
 	return nil

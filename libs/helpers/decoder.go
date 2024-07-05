@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/5822791760/go-api-template/libs/reserrors"
+	"github.com/5822791760/go-api-template/libs/errs"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -13,13 +13,13 @@ var (
 	validate = validator.New()
 )
 
-func Decode(r *http.Request, dst interface{}) reserrors.ErrRenderer {
+func Decode(r *http.Request, dst interface{}) errs.ErrRenderer {
 	if err := json.NewDecoder(r.Body).Decode(dst); err != nil {
-		return NewErr(err, reserrors.ErrDecode, http.StatusInternalServerError)
+		return NewErr(err, errs.ErrDecode, http.StatusInternalServerError)
 	}
 
 	if err := validate.Struct(dst); err != nil {
-		return NewErr(err, reserrors.ErrValidate, http.StatusBadRequest)
+		return NewErr(err, errs.ErrValidate, http.StatusBadRequest)
 	}
 
 	return nil

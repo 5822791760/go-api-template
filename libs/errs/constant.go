@@ -1,4 +1,4 @@
-package reserrors
+package errs
 
 const (
 	ErrQuery    = "BAD_QUERY"

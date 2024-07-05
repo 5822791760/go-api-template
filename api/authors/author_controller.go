@@ -36,7 +36,7 @@ func (c *AuthorController) GetAuthor(w http.ResponseWriter, r *http.Request) {
 	res := responses.GetAuthorResponse{}
 	var id int64
 
-	if err := helpers.SetURLIntParam(r, &id); err != nil {
+	if err := helpers.URLIntParam(r, &id); err != nil {
 		err.Render(w, c.render)
 		return
 	}
@@ -71,7 +71,7 @@ func (c *AuthorController) UpdateAuthor(w http.ResponseWriter, r *http.Request) 
 	body := requests.UpdateAuthorRequest{}
 	res := responses.UpdateAuthorResponse{}
 
-	if err := helpers.SetURLIntParam(r, &id); err != nil {
+	if err := helpers.URLIntParam(r, &id); err != nil {
 		err.Render(w, c.render)
 		return
 	}

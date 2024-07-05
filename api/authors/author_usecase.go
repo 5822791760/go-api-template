@@ -7,7 +7,7 @@ import (
 	. "github.com/5822791760/go-api-template/.gen/postgres/public/table"
 	"github.com/5822791760/go-api-template/api/authors/requests"
 	"github.com/5822791760/go-api-template/api/authors/responses"
-	"github.com/5822791760/go-api-template/libs/reserrors"
+	"github.com/5822791760/go-api-template/libs/errs"
 
 	. "github.com/go-jet/jet/v2/postgres"
 )
@@ -24,7 +24,7 @@ func NewAuthorUseCase(db *sql.DB, authorService *AuthorService) *AuthorUseCase {
 	}
 }
 
-func (u *AuthorUseCase) GetAuthors(res *[]responses.GetAuthorsResponse) reserrors.ErrRenderer {
+func (u *AuthorUseCase) GetAuthors(res *[]responses.GetAuthorsResponse) errs.ErrRenderer {
 	stmt := SELECT(
 		Authors.ID.AS("GetAuthorsResponse.ID"),
 		Authors.Name.AS("GetAuthorsResponse.Name"),
@@ -36,13 +36,13 @@ func (u *AuthorUseCase) GetAuthors(res *[]responses.GetAuthorsResponse) reserror
 
 	err := stmt.Query(u.db, res)
 	if err != nil {
-		return reserrors.NewErr(err, reserrors.ErrQuery, http.StatusInternalServerError)
+		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
 	}
 
 	return nil
 }
 
-func (u *AuthorUseCase) GetAuthor(id int64, res *responses.GetAuthorResponse) reserrors.ErrRenderer {
+func (u *AuthorUseCase) GetAuthor(id int64, res *responses.GetAuthorResponse) errs.ErrRenderer {
 	stmt := SELECT(
 		Authors.ID.AS("GetAuthorResponse.ID"),
 		Authors.Name.AS("GetAuthorResponse.Name"),
@@ -63,13 +63,13 @@ func (u *AuthorUseCase) GetAuthor(id int64, res *responses.GetAuthorResponse) re
 
 	err := stmt.Query(u.db, res)
 	if err != nil {
-		return reserrors.NewErr(err, reserrors.ErrQuery, http.StatusInternalServerError)
+		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
 	}
 
 	return nil
 }
 
-func (u *AuthorUseCase) CreateAuthor(body requests.CreateAuthorRequest, res *responses.CreateAuthorResponse) reserrors.ErrRenderer {
+func (u *AuthorUseCase) CreateAuthor(body requests.CreateAuthorRequest, res *responses.CreateAuthorResponse) errs.ErrRenderer {
 	if err := u.authorService.CreateAuthor(body); err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func (u *AuthorUseCase) CreateAuthor(body requests.CreateAuthorRequest, res *res
 	return nil
 }
 
-func (u *AuthorUseCase) UpdateAuthor(id int64, body requests.UpdateAuthorRequest, res *responses.UpdateAuthorResponse) reserrors.ErrRenderer {
+func (u *AuthorUseCase) UpdateAuthor(id int64, body requests.UpdateAuthorRequest, res *responses.UpdateAuthorResponse) errs.ErrRenderer {
 	if err := u.authorService.UpdateAuthor(id, body); err != nil {
 		return err
 	}
