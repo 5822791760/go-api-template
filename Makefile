@@ -5,7 +5,16 @@ endif
 
 DB_STRING="postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?sslmode=disable"
 
-dev:
+.wait-for-pg:
+	./cmd/wait-for-postgres.sh
+
+up:
+	docker-compose up -d
+
+down:
+	docker-compose down --remove-orphans
+
+dev: up .wait-for-pg
 	./cmd/air -c .air.toml
 
 build:

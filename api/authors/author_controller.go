@@ -1,16 +1,19 @@
 package authors
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/unrolled/render"
 )
 
 type AuthorController struct {
+	render *render.Render
 	useCase *AuthorUseCase
 }
 
-func NewAuthorController(useCase *AuthorUseCase) *AuthorController {
+func NewAuthorController(render *render.Render, useCase *AuthorUseCase) *AuthorController {
 	return &AuthorController{
+		render: render,
 		useCase: useCase,
 	}
 }
@@ -18,9 +21,9 @@ func NewAuthorController(useCase *AuthorUseCase) *AuthorController {
 func (c *AuthorController) GetAuthors(w http.ResponseWriter, r *http.Request) {
 	res, err := c.useCase.GetAuthors()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		err.Render(w, c.render)
 		return
 	}
 
-	json.NewEncoder(w).Encode(res)
+	c.render.JSON(w, http.StatusOK, res)
 }

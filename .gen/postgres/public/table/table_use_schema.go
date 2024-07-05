@@ -11,5 +11,6 @@ package table
 // this method only once at the beginning of the program.
 func UseSchema(schema string) {
 	Authors = Authors.FromSchema(schema)
+	Books = Books.FromSchema(schema)
 	GooseDbVersion = GooseDbVersion.FromSchema(schema)
 }
