@@ -25,7 +25,18 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 	bookController := books.NewBookController(render, bookUseCase)
 
 	// ROUTES =======
-	r.Get("/authors", authorController.GetAuthors)
-	r.Post("/authors", authorController.CreateAuthor)
-	r.Get("/books", bookController.GetBooks)
+
+	r.Route("/authors", func(r chi.Router) {
+		r.Get("/", authorController.GetAuthors)
+		r.Post("/", authorController.CreateAuthor)
+
+		r.Route("/{id}", func(r chi.Router) {
+			r.Put("/", authorController.UpdateAuthor)
+			r.Get("/", authorController.GetAuthor)
+		})
+	})
+
+	r.Route("/books", func(r chi.Router) {
+		r.Get("/", bookController.GetBooks)
+	})
 }

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/5822791760/go-api-template/api/authors/requests"
-	"github.com/5822791760/go-api-template/libs/errors"
+	"github.com/5822791760/go-api-template/libs/reserrors"
 
 	. "github.com/5822791760/go-api-template/.gen/postgres/public/table"
 	. "github.com/go-jet/jet/v2/postgres"
@@ -21,10 +21,29 @@ func NewAuthorService(db *sql.DB) *AuthorService {
 	}
 }
 
-func (s *AuthorService) CreateAuthor(body requests.CreateAuthorRequest) errors.ErrRenderer {
+func (s *AuthorService) CreateAuthor(body requests.CreateAuthorRequest) reserrors.ErrRenderer {
 	stmt := Authors.INSERT(Authors.ID, Authors.Name, Authors.Bio).VALUES(DEFAULT, body.Name, body.Bio)
 	if _, err := stmt.Exec(s.db); err != nil {
-		return errors.NewErr(err, errors.ErrQuery, http.StatusInternalServerError)
+		return reserrors.NewErr(err, reserrors.ErrQuery, http.StatusInternalServerError)
+	}
+
+	return nil
+}
+
+func (s *AuthorService) UpdateAuthor(id int64, body requests.UpdateAuthorRequest) reserrors.ErrRenderer {
+	stmt := Authors.
+		UPDATE(
+			Authors.Name,
+			Authors.Bio,
+		).
+		SET(
+			body.Name,
+			body.Bio,
+		).
+		WHERE(Authors.ID.EQ(Int(id)))
+
+	if _, err := stmt.Exec(s.db); err != nil {
+		return reserrors.NewErr(err, reserrors.ErrQuery, http.StatusInternalServerError)
 	}
 
 	return nil

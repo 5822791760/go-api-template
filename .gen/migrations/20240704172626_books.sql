@@ -6,14 +6,14 @@ CREATE TABLE books (
     bookno VARCHAR(255) NOT NULL,
     summary TEXT,
     author_id INTEGER,
-    CONSTRAINT fk_author FOREIGN KEY(author_id) REFERENCES authors(id) ON DELETE SET NULL
+    CONSTRAINT fk_books_author_id_authors FOREIGN KEY(author_id) REFERENCES authors(id) ON DELETE SET NULL
 );
 
-CREATE INDEX idx_author_id ON books(author_id);
+CREATE INDEX idx_books_author_id ON books(author_id);
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DROP INDEX IF EXISTS idx_author_id;
+DROP INDEX IF EXISTS idx_books_author_id;
 DROP TABLE IF EXISTS books;
 -- +goose StatementEnd

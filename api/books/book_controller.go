@@ -20,7 +20,7 @@ func NewBookController(render *render.Render, useCase *BookUseCase) *BookControl
 }
 
 func (c *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
-	var res []responses.GetBooksResponse
+	res := []responses.GetBooksResponse{}
 
 	if err := c.useCase.GetBooks(&res); err != nil {
 		err.Render(w, c.render)

@@ -32,16 +32,56 @@ func (c *AuthorController) GetAuthors(w http.ResponseWriter, r *http.Request) {
 	c.render.JSON(w, http.StatusOK, res)
 }
 
-func (c *AuthorController) CreateAuthor(w http.ResponseWriter, r *http.Request) {
-	var createAuthorReq requests.CreateAuthorRequest
-	var res responses.CreateAuthorResponse
+func (c *AuthorController) GetAuthor(w http.ResponseWriter, r *http.Request) {
+	res := responses.GetAuthorResponse{}
+	var id int64
 
-	if err := helpers.Decode(r, &createAuthorReq); err != nil {
+	if err := helpers.SetURLIntParam(r, &id); err != nil {
 		err.Render(w, c.render)
 		return
 	}
 
-	if err := c.useCase.CreateAuthor(createAuthorReq, &res); err != nil {
+	if err := c.useCase.GetAuthor(id, &res); err != nil {
+		err.Render(w, c.render)
+		return
+	}
+
+	c.render.JSON(w, http.StatusOK, res)
+}
+
+func (c *AuthorController) CreateAuthor(w http.ResponseWriter, r *http.Request) {
+	var body requests.CreateAuthorRequest
+	var res responses.CreateAuthorResponse
+
+	if err := helpers.Decode(r, &body); err != nil {
+		err.Render(w, c.render)
+		return
+	}
+
+	if err := c.useCase.CreateAuthor(body, &res); err != nil {
+		err.Render(w, c.render)
+		return
+	}
+
+	c.render.JSON(w, http.StatusOK, res)
+}
+
+func (c *AuthorController) UpdateAuthor(w http.ResponseWriter, r *http.Request) {
+	var id int64
+	body := requests.UpdateAuthorRequest{}
+	res := responses.UpdateAuthorResponse{}
+
+	if err := helpers.SetURLIntParam(r, &id); err != nil {
+		err.Render(w, c.render)
+		return
+	}
+
+	if err := helpers.Decode(r, &body); err != nil {
+		err.Render(w, c.render)
+		return
+	}
+
+	if err := c.useCase.UpdateAuthor(int64(id), body, &res); err != nil {
 		err.Render(w, c.render)
 		return
 	}

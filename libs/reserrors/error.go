@@ -1,4 +1,4 @@
-package errors
+package reserrors
 
 import (
 	"net/http"
@@ -26,5 +26,15 @@ func NewErr(err error, status string, code int) ErrRender {
 
 func (e ErrRender) Render(w http.ResponseWriter, render *render.Render) {
 	render.JSON(w, e.Code, e)
+	return
+}
+
+func RenderControllerErr(err error, w http.ResponseWriter, render *render.Render) {
+	ErrRender{
+		StatusText: ErrGeneric,
+		Code:       http.StatusBadRequest,
+		ErrorText:  err.Error(),
+	}.Render(w, render)
+
 	return
 }
