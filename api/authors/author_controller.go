@@ -5,18 +5,18 @@ import (
 
 	"github.com/5822791760/go-api-template/api/authors/requests"
 	"github.com/5822791760/go-api-template/api/authors/responses"
-	"github.com/5822791760/go-api-template/helpers"
+	"github.com/5822791760/go-api-template/libs/helpers"
 	"github.com/unrolled/render"
 )
 
 type AuthorController struct {
-	render *render.Render
+	render  *render.Render
 	useCase *AuthorUseCase
 }
 
 func NewAuthorController(render *render.Render, useCase *AuthorUseCase) *AuthorController {
 	return &AuthorController{
-		render: render,
+		render:  render,
 		useCase: useCase,
 	}
 }

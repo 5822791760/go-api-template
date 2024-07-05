@@ -10,7 +10,7 @@ import (
 )
 
 func InitRoutes(r *chi.Mux, db *sql.DB) {
-	renderer := render.New()
+	render := render.New()
 
 	// SERVICES =======
 	authorService := authors.NewAuthorService(db)
@@ -21,8 +21,8 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 	bookUseCase := books.NewBookUseCase(db, bookService)
 
 	// CONTROLLERS =======
-	authorController := authors.NewAuthorController(renderer, authorUseCase)
-	bookController := books.NewBookController(renderer, bookUseCase)
+	authorController := authors.NewAuthorController(render, authorUseCase)
+	bookController := books.NewBookController(render, bookUseCase)
 
 	// ROUTES =======
 	r.Get("/authors", authorController.GetAuthors)

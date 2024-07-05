@@ -1,9 +1,9 @@
 package responses
 
 type books struct {
-	ID       int32 `json:"id"`
-	Name     string `json:"name"`
-	Bookno   string `json:"book_no"`
+	ID     int32  `json:"id"`
+	Name   string `json:"name"`
+	Bookno string `json:"book_no"`
 }
 
 type GetAuthorsResponse struct {

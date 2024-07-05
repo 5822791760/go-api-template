@@ -8,14 +8,14 @@ import (
 )
 
 type BookController struct {
-	render *render.Render
+	render  *render.Render
 	useCase *BookUseCase
 }
 
 func NewBookController(render *render.Render, useCase *BookUseCase) *BookController {
 	return &BookController{
 		useCase: useCase,
-		render: render,
+		render:  render,
 	}
 }
 

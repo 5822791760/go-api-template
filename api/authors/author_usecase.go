@@ -7,8 +7,7 @@ import (
 	. "github.com/5822791760/go-api-template/.gen/postgres/public/table"
 	"github.com/5822791760/go-api-template/api/authors/requests"
 	"github.com/5822791760/go-api-template/api/authors/responses"
-	"github.com/5822791760/go-api-template/constants"
-	"github.com/5822791760/go-api-template/helpers"
+	"github.com/5822791760/go-api-template/libs/errors"
 
 	. "github.com/go-jet/jet/v2/postgres"
 )
@@ -25,7 +24,7 @@ func NewAuthorUseCase(db *sql.DB, authorService *AuthorService) *AuthorUseCase {
 	}
 }
 
-func (u *AuthorUseCase) GetAuthors(res *[]responses.GetAuthorsResponse) helpers.IErrResponse {
+func (u *AuthorUseCase) GetAuthors(res *[]responses.GetAuthorsResponse) errors.ErrRenderer {
 	stmt := SELECT(
 		Authors.ID.AS("GetAuthorsResponse.ID"),
 		Authors.Name.AS("GetAuthorsResponse.Name"),
@@ -37,13 +36,13 @@ func (u *AuthorUseCase) GetAuthors(res *[]responses.GetAuthorsResponse) helpers.
 
 	err := stmt.Query(u.db, res)
 	if err != nil {
-		return helpers.NewErr(err, constants.ErrQuery, http.StatusInternalServerError)
+		return errors.NewErr(err, errors.ErrQuery, http.StatusInternalServerError)
 	}
 
 	return nil
 }
 
-func (u *AuthorUseCase) CreateAuthor(body requests.CreateAuthorRequest, res *responses.CreateAuthorResponse) helpers.IErrResponse {
+func (u *AuthorUseCase) CreateAuthor(body requests.CreateAuthorRequest, res *responses.CreateAuthorResponse) errors.ErrRenderer {
 	if err := u.authorService.CreateAuthor(body); err != nil {
 		return err
 	}

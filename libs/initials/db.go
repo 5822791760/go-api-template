@@ -20,7 +20,7 @@ func InitDB() (*sql.DB, error) {
 		// fmt.Printf("- SQL: %s Args: %v \n\n", sql, args)
 		fmt.Printf("\n++++++++++++++++++++++++++++++++\n")
 		fmt.Printf("%s \n", queryInfo.Statement.DebugSql())
-	
+
 		// Depending on how the statement is executed, RowsProcessed is:
 		//   - Number of rows returned for Query() and QueryContext() methods
 		//   - RowsAffected() for Exec() and ExecContext() methods
@@ -28,7 +28,7 @@ func InitDB() (*sql.DB, error) {
 		fmt.Printf("- Rows processed: %d\n", queryInfo.RowsProcessed)
 		fmt.Printf("- Duration %s\n", queryInfo.Duration.String())
 		fmt.Printf("- Execution error: %v\n", queryInfo.Err)
-	
+
 		callerFile, callerLine, callerFunction := queryInfo.Caller()
 		fmt.Printf("- Caller file: %s, line: %d, function: %s\n\n", callerFile, callerLine, callerFunction)
 		fmt.Printf("++++++++++++++++++++++++++++++++\n\n")

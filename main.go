@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/5822791760/go-api-template/initials"
+	"github.com/5822791760/go-api-template/libs/initials"
 	_ "github.com/lib/pq"
 
 	"github.com/go-chi/chi/v5"
