@@ -8,6 +8,7 @@ import (
 
 type ErrRenderer interface {
 	Render(w http.ResponseWriter, render *render.Render)
+	Error() string
 }
 
 type ErrRender struct {
@@ -27,6 +28,10 @@ func NewErr(err error, status string, code int) ErrRender {
 func (e ErrRender) Render(w http.ResponseWriter, render *render.Render) {
 	render.JSON(w, e.Code, e)
 	return
+}
+
+func (e ErrRender) Error() string {
+	return e.ErrorText
 }
 
 func RenderControllerErr(err error, w http.ResponseWriter, render *render.Render) {

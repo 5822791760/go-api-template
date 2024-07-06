@@ -3,8 +3,8 @@ package authors
 import (
 	"net/http"
 
-	"github.com/5822791760/go-api-template/api/authors/requests"
-	"github.com/5822791760/go-api-template/api/authors/responses"
+	"github.com/5822791760/go-api-template/api/authors/reqs"
+	"github.com/5822791760/go-api-template/api/authors/res"
 	"github.com/5822791760/go-api-template/libs/helpers"
 	"github.com/unrolled/render"
 )
@@ -22,7 +22,7 @@ func NewAuthorController(render *render.Render, useCase *AuthorUseCase) *AuthorC
 }
 
 func (c *AuthorController) GetAuthors(w http.ResponseWriter, r *http.Request) {
-	res := []responses.GetAuthorsResponse{}
+	res := []res.GetAuthorsResponse{}
 
 	if err := c.useCase.GetAuthors(&res); err != nil {
 		err.Render(w, c.render)
@@ -33,8 +33,8 @@ func (c *AuthorController) GetAuthors(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *AuthorController) GetAuthor(w http.ResponseWriter, r *http.Request) {
-	res := responses.GetAuthorResponse{}
-	var id int64
+	res := res.GetAuthorResponse{}
+	var id int32
 
 	if err := helpers.URLIntParam(r, &id); err != nil {
 		err.Render(w, c.render)
@@ -50,8 +50,8 @@ func (c *AuthorController) GetAuthor(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *AuthorController) CreateAuthor(w http.ResponseWriter, r *http.Request) {
-	var body requests.CreateAuthorRequest
-	var res responses.CreateAuthorResponse
+	var body reqs.CreateAuthorRequest
+	var res res.CreateAuthorResponse
 
 	if err := helpers.Decode(r, &body); err != nil {
 		err.Render(w, c.render)
@@ -67,9 +67,9 @@ func (c *AuthorController) CreateAuthor(w http.ResponseWriter, r *http.Request) 
 }
 
 func (c *AuthorController) UpdateAuthor(w http.ResponseWriter, r *http.Request) {
-	var id int64
-	body := requests.UpdateAuthorRequest{}
-	res := responses.UpdateAuthorResponse{}
+	var id int32
+	body := reqs.UpdateAuthorRequest{}
+	res := res.UpdateAuthorResponse{}
 
 	if err := helpers.URLIntParam(r, &id); err != nil {
 		err.Render(w, c.render)
@@ -81,7 +81,7 @@ func (c *AuthorController) UpdateAuthor(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if err := c.useCase.UpdateAuthor(int64(id), body, &res); err != nil {
+	if err := c.useCase.UpdateAuthor(int32(id), body, &res); err != nil {
 		err.Render(w, c.render)
 		return
 	}

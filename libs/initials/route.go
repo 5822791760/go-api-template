@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/5822791760/go-api-template/api/authors"
+	"github.com/5822791760/go-api-template/api/auths"
 	"github.com/5822791760/go-api-template/api/books"
 	"github.com/go-chi/chi/v5"
 	"github.com/unrolled/render"
@@ -15,14 +16,17 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 	// SERVICES =======
 	authorService := authors.NewAuthorService(db)
 	bookService := books.NewBookService(db)
+	authService := auths.NewAuthService(db)
 
 	// USECASES =======
 	authorUseCase := authors.NewAuthorUseCase(db, authorService)
 	bookUseCase := books.NewBookUseCase(db, bookService)
+	authUseCase := auths.NewAuthUseCase(db, authService)
 
 	// CONTROLLERS =======
 	authorController := authors.NewAuthorController(render, authorUseCase)
 	bookController := books.NewBookController(render, bookUseCase)
+	authController := auths.NewAuthController(render, authUseCase)
 
 	// ROUTES =======
 
@@ -38,5 +42,10 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 
 	r.Route("/books", func(r chi.Router) {
 		r.Get("/", bookController.GetBooks)
+	})
+
+	r.Route("/auths", func(r chi.Router) {
+		r.Post("/sign_up", authController.SignUp)
+		r.Post("/sign_in", authController.SignIn)
 	})
 }

@@ -15,18 +15,18 @@ var (
 
 func Decode(r *http.Request, dst interface{}) errs.ErrRenderer {
 	if err := json.NewDecoder(r.Body).Decode(dst); err != nil {
-		return NewErr(err, errs.ErrDecode, http.StatusInternalServerError)
+		return errs.NewErr(err, errs.ErrDecode, http.StatusInternalServerError)
 	}
 
 	if err := validate.Struct(dst); err != nil {
-		return NewErr(err, errs.ErrValidate, http.StatusBadRequest)
+		return errs.NewErr(err, errs.ErrValidate, http.StatusBadRequest)
 	}
 
 	return nil
 }
 
 func init() {
-	validate.RegisterCustomTypeFunc(validatePointer, (*string)(nil), (*int)(nil), (*int32)(nil), (*int64)(nil), (*float32)(nil), (*float64)(nil), (*bool)(nil))
+	validate.RegisterCustomTypeFunc(validatePointer, (*string)(nil), (*int)(nil), (*int32)(nil), (*int32)(nil), (*float32)(nil), (*float64)(nil), (*bool)(nil))
 }
 
 func validatePointer(field reflect.Value) interface{} {

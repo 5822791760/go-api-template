@@ -1,4 +1,4 @@
-package requests
+package reqs
 
 type UpdateAuthorRequest struct {
 	Name string `json:"name" validate:"min=1,max=255"`

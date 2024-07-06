@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	. "github.com/5822791760/go-api-template/.gen/postgres/public/table"
-	"github.com/5822791760/go-api-template/api/books/responses"
+	"github.com/5822791760/go-api-template/api/books/res"
 	"github.com/5822791760/go-api-template/libs/errs"
 
 	. "github.com/go-jet/jet/v2/postgres"
@@ -23,7 +23,7 @@ func NewBookUseCase(db *sql.DB, bookService *BookService) *BookUseCase {
 	}
 }
 
-func (u *BookUseCase) GetBooks(res *[]responses.GetBooksResponse) errs.ErrRenderer {
+func (u *BookUseCase) GetBooks(res *[]res.GetBooksResponse) errs.ErrRenderer {
 	stmt := SELECT(
 		Books.ID.AS("GetBooksResponse.ID"),
 		Books.Name.AS("GetBooksResponse.Name"),

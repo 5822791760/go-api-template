@@ -12,6 +12,7 @@ type Config struct {
 	DBName     string
 	DBUser     string
 	DBPassword string
+	JwtSecret  string
 }
 
 var AppConfig Config
@@ -31,6 +32,7 @@ func LoadConfig() error {
 		DBName:     viper.GetString("DB_DATABASE"),
 		DBUser:     viper.GetString("DB_USER"),
 		DBPassword: viper.GetString("DB_PASSWORD"),
+		JwtSecret:  viper.GetString("JWT_SECRET"),
 	}
 
 	return nil
@@ -44,4 +46,8 @@ func GetDBConnectionString() string {
 		AppConfig.DBPort,
 		AppConfig.DBName,
 	)
+}
+
+func GetJwtSecret() string {
+	return AppConfig.JwtSecret
 }

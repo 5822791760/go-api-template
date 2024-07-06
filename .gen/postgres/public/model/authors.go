@@ -8,7 +8,7 @@
 package model
 
 type Authors struct {
-	ID   int64 `sql:"primary_key"`
+	ID   int32 `sql:"primary_key"`
 	Name string
 	Bio  *string
 }

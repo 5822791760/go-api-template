@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE authors (
-  id   BIGSERIAL PRIMARY KEY,
+  id   SERIAL PRIMARY KEY,
   name text      NOT NULL,
   bio  text
 );

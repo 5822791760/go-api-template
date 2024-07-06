@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func URLIntParam(r *http.Request, id *int64) errs.ErrRenderer {
+func URLIntParam(r *http.Request, id *int32) errs.ErrRenderer {
 	paramReq := chi.URLParam(r, "id")
 
 	if paramReq == "" {
@@ -29,7 +29,7 @@ func URLIntParam(r *http.Request, id *int64) errs.ErrRenderer {
 		}
 	}
 
-	*id = int64(paramId)
+	*id = int32(paramId)
 
 	return nil
 }

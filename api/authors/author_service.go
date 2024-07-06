@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/5822791760/go-api-template/api/authors/requests"
+	"github.com/5822791760/go-api-template/api/authors/reqs"
 	"github.com/5822791760/go-api-template/libs/errs"
+	"github.com/5822791760/go-api-template/libs/helpers"
 
 	. "github.com/5822791760/go-api-template/.gen/postgres/public/table"
 	. "github.com/go-jet/jet/v2/postgres"
@@ -21,7 +22,7 @@ func NewAuthorService(db *sql.DB) *AuthorService {
 	}
 }
 
-func (s *AuthorService) CreateAuthor(body requests.CreateAuthorRequest) errs.ErrRenderer {
+func (s *AuthorService) CreateAuthor(body reqs.CreateAuthorRequest) errs.ErrRenderer {
 	stmt := Authors.INSERT(Authors.ID, Authors.Name, Authors.Bio).VALUES(DEFAULT, body.Name, body.Bio)
 	if _, err := stmt.Exec(s.db); err != nil {
 		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
@@ -30,7 +31,7 @@ func (s *AuthorService) CreateAuthor(body requests.CreateAuthorRequest) errs.Err
 	return nil
 }
 
-func (s *AuthorService) UpdateAuthor(id int64, body requests.UpdateAuthorRequest) errs.ErrRenderer {
+func (s *AuthorService) UpdateAuthor(id int32, body reqs.UpdateAuthorRequest) errs.ErrRenderer {
 	stmt := Authors.
 		UPDATE(
 			Authors.Name,
@@ -40,10 +41,15 @@ func (s *AuthorService) UpdateAuthor(id int64, body requests.UpdateAuthorRequest
 			body.Name,
 			body.Bio,
 		).
-		WHERE(Authors.ID.EQ(Int(id)))
+		WHERE(Authors.ID.EQ(Int(int64(id))))
 
-	if _, err := stmt.Exec(s.db); err != nil {
+	res, err := stmt.Exec(s.db)
+	if err != nil {
 		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+	}
+
+	if err := helpers.CheckAffectedRow(res); err != nil {
+		return err
 	}
 
 	return nil
