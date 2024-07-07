@@ -5,19 +5,17 @@ import (
 
 	"github.com/5822791760/go-api-template/api/auths/reqs"
 	"github.com/5822791760/go-api-template/api/auths/res"
+	"github.com/5822791760/go-api-template/libs"
 	"github.com/5822791760/go-api-template/libs/helpers"
-	"github.com/unrolled/render"
 )
 
 type AuthController struct {
-	render  *render.Render
 	useCase *AuthUseCase
 }
 
-func NewAuthController(render *render.Render, useCase *AuthUseCase) *AuthController {
+func NewAuthController(useCase *AuthUseCase) *AuthController {
 	return &AuthController{
 		useCase: useCase,
-		render:  render,
 	}
 }
 
@@ -26,21 +24,21 @@ func (c *AuthController) SignUp(w http.ResponseWriter, r *http.Request) {
 	res := res.SignUpResponse{}
 
 	if err := helpers.Decode(r, &body); err != nil {
-		err.Render(w, c.render)
+		err.Render(w)
 		return
 	}
 
 	if err := helpers.HashPassword(&body.Password); err != nil {
-		err.Render(w, c.render)
+		err.Render(w)
 		return
 	}
 
 	if err := c.useCase.SignUp(body, &res); err != nil {
-		err.Render(w, c.render)
+		err.Render(w)
 		return
 	}
 
-	c.render.JSON(w, http.StatusCreated, res)
+	libs.Render.JSON(w, http.StatusCreated, res)
 }
 
 func (c *AuthController) SignIn(w http.ResponseWriter, r *http.Request) {
@@ -48,14 +46,14 @@ func (c *AuthController) SignIn(w http.ResponseWriter, r *http.Request) {
 	resp := res.SignInResponse{}
 
 	if err := helpers.Decode(r, &body); err != nil {
-		err.Render(w, c.render)
+		err.Render(w)
 		return
 	}
 
 	if err := c.useCase.SignIn(body, &resp); err != nil {
-		err.Render(w, c.render)
+		err.Render(w)
 		return
 	}
 
-	c.render.JSON(w, http.StatusOK, resp)
+	libs.Render.JSON(w, http.StatusOK, resp)
 }

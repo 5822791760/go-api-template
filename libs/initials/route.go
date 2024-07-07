@@ -6,14 +6,11 @@ import (
 	"github.com/5822791760/go-api-template/api/authors"
 	"github.com/5822791760/go-api-template/api/auths"
 	"github.com/5822791760/go-api-template/api/books"
+	"github.com/5822791760/go-api-template/middlewares"
 	"github.com/go-chi/chi/v5"
-	"github.com/unrolled/render"
 )
 
 func InitRoutes(r *chi.Mux, db *sql.DB) {
-	render := render.New()
-	middlewareService := NewMiddlewareService(render)
-
 	// SERVICES =======
 	authorService := authors.NewAuthorService(db)
 	bookService := books.NewBookService(db)
@@ -25,9 +22,9 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 	authUseCase := auths.NewAuthUseCase(db, authService)
 
 	// CONTROLLERS =======
-	authorController := authors.NewAuthorController(render, authorUseCase)
-	bookController := books.NewBookController(render, bookUseCase)
-	authController := auths.NewAuthController(render, authUseCase)
+	authorController := authors.NewAuthorController(authorUseCase)
+	bookController := books.NewBookController(bookUseCase)
+	authController := auths.NewAuthController(authUseCase)
 
 	// ROUTES =======
 
@@ -44,7 +41,7 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 
 			// JWT Protected
 			r.Route("/", func(r chi.Router) {
-				r.Use(middlewareService.JwtMiddleware)
+				r.Use(middlewares.JwtMiddleware)
 
 				r.Get("/authors", authorController.GetAuthors)
 				r.Post("/authors", authorController.CreateAuthor)

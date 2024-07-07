@@ -65,7 +65,7 @@ func ParseJwt(tokenString string, claims *jwt.MapClaims) errs.ErrRenderer {
 
 	tokenClaims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return errs.NewErr(errors.New("Unable to claim token"), errs.ErrGeneric, http.StatusInternalServerError)
+		return errs.NewErrByString("Unable to claim token", errs.ErrGeneric, http.StatusInternalServerError)
 	}
 
 	*claims = tokenClaims
@@ -77,7 +77,7 @@ func ExtractUserID(r *http.Request, currentID *int32) errs.ErrRenderer {
 	claims := r.Context().Value("claims").(jwt.MapClaims)
 	id, ok := claims["id"].(float64)
 	if !ok {
-		return errs.NewErr(errors.New("id in token not found"), errs.ErrGeneric, http.StatusBadRequest)
+		return errs.NewErrByString("id in token not found", errs.ErrGeneric, http.StatusBadRequest)
 	}
 
 	*currentID = int32(id)

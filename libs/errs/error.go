@@ -3,11 +3,11 @@ package errs
 import (
 	"net/http"
 
-	"github.com/unrolled/render"
+	"github.com/5822791760/go-api-template/libs"
 )
 
 type ErrRenderer interface {
-	Render(w http.ResponseWriter, render *render.Render)
+	Render(w http.ResponseWriter)
 	Error() string
 }
 
@@ -33,24 +33,24 @@ func NewErrByString(message string, status string, code int) ErrRender {
 	}
 }
 
-func RenderErr(w http.ResponseWriter, render *render.Render, err error, status string, code int) {
-	render.JSON(w, code, ErrRender{
+func RenderErr(w http.ResponseWriter, err error, status string, code int) {
+	libs.Render.JSON(w, code, ErrRender{
 		StatusText: status,
 		Code:       code,
 		ErrorText:  err.Error(),
 	})
 }
 
-func RenderErrByString(w http.ResponseWriter, render *render.Render, message string, status string, code int) {
-	render.JSON(w, code, ErrRender{
+func RenderErrByString(w http.ResponseWriter, message string, status string, code int) {
+	libs.Render.JSON(w, code, ErrRender{
 		StatusText: status,
 		Code:       code,
 		ErrorText:  message,
 	})
 }
 
-func (e ErrRender) Render(w http.ResponseWriter, render *render.Render) {
-	render.JSON(w, e.Code, e)
+func (e ErrRender) Render(w http.ResponseWriter) {
+	libs.Render.JSON(w, e.Code, e)
 	return
 }
 

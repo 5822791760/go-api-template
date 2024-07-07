@@ -4,18 +4,16 @@ import (
 	"net/http"
 
 	"github.com/5822791760/go-api-template/api/books/res"
-	"github.com/unrolled/render"
+	"github.com/5822791760/go-api-template/libs"
 )
 
 type BookController struct {
-	render  *render.Render
 	useCase *BookUseCase
 }
 
-func NewBookController(render *render.Render, useCase *BookUseCase) *BookController {
+func NewBookController(useCase *BookUseCase) *BookController {
 	return &BookController{
 		useCase: useCase,
-		render:  render,
 	}
 }
 
@@ -23,9 +21,9 @@ func (c *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
 	res := []res.GetBooksResponse{}
 
 	if err := c.useCase.GetBooks(&res); err != nil {
-		err.Render(w, c.render)
+		err.Render(w)
 		return
 	}
 
-	c.render.JSON(w, http.StatusOK, res)
+	libs.Render.JSON(w, http.StatusOK, res)
 }
