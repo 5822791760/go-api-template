@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/5822791760/go-api-template/config"
@@ -11,7 +12,7 @@ import (
 )
 
 type JwtPayload struct {
-	ID string
+	ID int32
 }
 
 func HashPassword(password *string) errs.ErrRenderer {
@@ -46,6 +47,40 @@ func EncodeJwt(data JwtPayload, token *string) errs.ErrRenderer {
 	}
 
 	*token = tokenString
+
+	return nil
+}
+
+func ParseJwt(tokenString string, claims *jwt.MapClaims) errs.ErrRenderer {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.GetJwtSecret()), nil
+	})
+
+	if err != nil {
+		return errs.NewErr(err, errs.ErrGeneric, http.StatusInternalServerError)
+	}
+
+	tokenClaims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return errs.NewErr(errors.New("Unable to claim token"), errs.ErrGeneric, http.StatusInternalServerError)
+	}
+
+	*claims = tokenClaims
+
+	return nil
+}
+
+func ExtractUserID(r *http.Request, currentID *int32) errs.ErrRenderer {
+	claims := r.Context().Value("claims").(jwt.MapClaims)
+	id, ok := claims["id"].(float64)
+	if !ok {
+		return errs.NewErr(errors.New("id in token not found"), errs.ErrGeneric, http.StatusBadRequest)
+	}
+
+	*currentID = int32(id)
 
 	return nil
 }

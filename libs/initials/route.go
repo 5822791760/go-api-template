@@ -12,6 +12,7 @@ import (
 
 func InitRoutes(r *chi.Mux, db *sql.DB) {
 	render := render.New()
+	middlewareService := NewMiddlewareService(render)
 
 	// SERVICES =======
 	authorService := authors.NewAuthorService(db)
@@ -30,22 +31,30 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 
 	// ROUTES =======
 
-	r.Route("/authors", func(r chi.Router) {
-		r.Get("/", authorController.GetAuthors)
-		r.Post("/", authorController.CreateAuthor)
+	r.Route("/api", func(r chi.Router) {
+		r.Route("/v1", func(r chi.Router) {
 
-		r.Route("/{id}", func(r chi.Router) {
-			r.Put("/", authorController.UpdateAuthor)
-			r.Get("/", authorController.GetAuthor)
+			// PUBLIC
+			r.Route("/public", func(r chi.Router) {
+
+				r.Post("/auths/sign_up", authController.SignUp)
+				r.Post("/auths/sign_in", authController.SignIn)
+
+			})
+
+			// JWT Protected
+			r.Route("/", func(r chi.Router) {
+				r.Use(middlewareService.JwtMiddleware)
+
+				r.Get("/authors", authorController.GetAuthors)
+				r.Post("/authors", authorController.CreateAuthor)
+				r.Put("/authors/{id}", authorController.UpdateAuthor)
+				r.Get("/authors/{id}", authorController.GetAuthor)
+
+				r.Get("/books", bookController.GetBooks)
+
+			})
+
 		})
-	})
-
-	r.Route("/books", func(r chi.Router) {
-		r.Get("/", bookController.GetBooks)
-	})
-
-	r.Route("/auths", func(r chi.Router) {
-		r.Post("/sign_up", authController.SignUp)
-		r.Post("/sign_in", authController.SignIn)
 	})
 }

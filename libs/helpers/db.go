@@ -37,6 +37,21 @@ func ShouldNotExists(db *sql.DB, statement SelectStatement) errs.ErrRenderer {
 	return nil
 }
 
+func ShouldNotExistsTx(db *sql.Tx, statement SelectStatement) errs.ErrRenderer {
+	var rowExists RowExist
+
+	stmt := SELECT(EXISTS(statement).AS("RowExist.Exists"))
+	if err := stmt.Query(db, &rowExists); err != nil {
+		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+	}
+
+	if rowExists.Exists == true {
+		return errs.NewErr(errors.New("This Data already exist"), errs.ErrQuery, http.StatusBadRequest)
+	}
+
+	return nil
+}
+
 func FormatDateTime(date interface{ Format(string) string }) string {
 	return date.Format(time.RFC3339)
 }

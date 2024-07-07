@@ -25,6 +25,30 @@ func NewErr(err error, status string, code int) ErrRender {
 	}
 }
 
+func NewErrByString(message string, status string, code int) ErrRender {
+	return ErrRender{
+		StatusText: status,
+		Code:       code,
+		ErrorText:  message,
+	}
+}
+
+func RenderErr(w http.ResponseWriter, render *render.Render, err error, status string, code int) {
+	render.JSON(w, code, ErrRender{
+		StatusText: status,
+		Code:       code,
+		ErrorText:  err.Error(),
+	})
+}
+
+func RenderErrByString(w http.ResponseWriter, render *render.Render, message string, status string, code int) {
+	render.JSON(w, code, ErrRender{
+		StatusText: status,
+		Code:       code,
+		ErrorText:  message,
+	})
+}
+
 func (e ErrRender) Render(w http.ResponseWriter, render *render.Render) {
 	render.JSON(w, e.Code, e)
 	return
@@ -32,14 +56,4 @@ func (e ErrRender) Render(w http.ResponseWriter, render *render.Render) {
 
 func (e ErrRender) Error() string {
 	return e.ErrorText
-}
-
-func RenderControllerErr(err error, w http.ResponseWriter, render *render.Render) {
-	ErrRender{
-		StatusText: ErrGeneric,
-		Code:       http.StatusBadRequest,
-		ErrorText:  err.Error(),
-	}.Render(w, render)
-
-	return
 }

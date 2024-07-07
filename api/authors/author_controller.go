@@ -23,6 +23,12 @@ func NewAuthorController(render *render.Render, useCase *AuthorUseCase) *AuthorC
 
 func (c *AuthorController) GetAuthors(w http.ResponseWriter, r *http.Request) {
 	res := []res.GetAuthorsResponse{}
+	var currentUserID int32
+
+	if err := helpers.ExtractUserID(r, &currentUserID); err != nil {
+		err.Render(w, c.render)
+		return
+	}
 
 	if err := c.useCase.GetAuthors(&res); err != nil {
 		err.Render(w, c.render)
