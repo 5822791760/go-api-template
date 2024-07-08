@@ -24,11 +24,12 @@ func NewBookUseCase(db *sql.DB, bookService *BookService) *BookUseCase {
 }
 
 func (u *BookUseCase) GetBooks() ([]res.GetBooksResponse, errs.ErrRenderer) {
-	var resp []res.GetBooksResponse
+	resp := []res.GetBooksResponse{}
 	stmt := SELECT(
 		Books.ID.AS("GetBooksResponse.ID"),
 		Books.Name.AS("GetBooksResponse.Name"),
 		Books.Bookno.AS("GetBooksResponse.Bookno"),
+		Books.Summary.AS("GetBooksResponse.Summary"),
 		Authors.ID.AS("author.ID"),
 		Authors.Name.AS("author.Name"),
 	).FROM(Books.LEFT_JOIN(Authors, Authors.ID.EQ(Books.AuthorID)))

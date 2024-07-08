@@ -6,9 +6,10 @@ type author struct {
 }
 
 type GetBooksResponse struct {
-	ID     int32  `json:"id"`
-	Name   string `json:"name"`
-	BookNo string `json:"book_no"`
+	ID      int32   `json:"id"`
+	Name    string  `json:"name"`
+	BookNo  string  `json:"book_no"`
+	Summary *string `json:"summary"`
 
-	Author author `json:"author"`
+	Author *author `json:"author"`
 }
