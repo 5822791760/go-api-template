@@ -7,7 +7,6 @@ import (
 
 	"github.com/5822791760/go-api-template/libs/errs"
 	"github.com/5822791760/go-api-template/libs/helpers"
-	"github.com/golang-jwt/jwt"
 )
 
 func JwtMiddleware(next http.Handler) http.Handler {
@@ -26,8 +25,8 @@ func JwtMiddleware(next http.Handler) http.Handler {
 
 		tokenString := bearerToken[1]
 
-		var claims jwt.MapClaims
-		if err := helpers.ParseJwt(tokenString, &claims); err != nil {
+		claims, err := helpers.ParseJwt(tokenString)
+		if err != nil {
 			errs.RenderErr(w, err, errs.ErrUnAuthorize, http.StatusUnauthorized)
 			return
 		}

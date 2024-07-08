@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/5822791760/go-api-template/api/authors/reqs"
-	"github.com/5822791760/go-api-template/api/authors/res"
 	"github.com/5822791760/go-api-template/libs"
 	"github.com/5822791760/go-api-template/libs/helpers"
 )
@@ -20,75 +19,65 @@ func NewAuthorController(useCase *AuthorUseCase) *AuthorController {
 }
 
 func (c *AuthorController) GetAuthors(w http.ResponseWriter, r *http.Request) {
-	res := []res.GetAuthorsResponse{}
-	var currentUserID int32
-
-	if err := helpers.ExtractUserID(r, &currentUserID); err != nil {
+	resp, err := c.useCase.GetAuthors()
+	if err != nil {
 		err.Render(w)
 		return
 	}
 
-	if err := c.useCase.GetAuthors(&res); err != nil {
-		err.Render(w)
-		return
-	}
-
-	libs.Render.JSON(w, http.StatusOK, res)
+	libs.Render.JSON(w, http.StatusOK, resp)
 }
 
 func (c *AuthorController) GetAuthor(w http.ResponseWriter, r *http.Request) {
-	res := res.GetAuthorResponse{}
-	var id int32
-
-	if err := helpers.URLIntParam(r, &id); err != nil {
+	id, err := helpers.GetIDParam(r)
+	if err != nil {
 		err.Render(w)
 		return
 	}
 
-	if err := c.useCase.GetAuthor(id, &res); err != nil {
+	resp, err := c.useCase.GetAuthor(id)
+	if err != nil {
 		err.Render(w)
 		return
 	}
 
-	libs.Render.JSON(w, http.StatusOK, res)
+	libs.Render.JSON(w, http.StatusOK, resp)
 }
 
 func (c *AuthorController) CreateAuthor(w http.ResponseWriter, r *http.Request) {
 	var body reqs.CreateAuthorRequest
-	var res res.CreateAuthorResponse
-
 	if err := helpers.Decode(r, &body); err != nil {
 		err.Render(w)
 		return
 	}
 
-	if err := c.useCase.CreateAuthor(body, &res); err != nil {
+	resp, err := c.useCase.CreateAuthor(body)
+	if err != nil {
 		err.Render(w)
 		return
 	}
 
-	libs.Render.JSON(w, http.StatusOK, res)
+	libs.Render.JSON(w, http.StatusOK, resp)
 }
 
 func (c *AuthorController) UpdateAuthor(w http.ResponseWriter, r *http.Request) {
-	var id int32
-	body := reqs.UpdateAuthorRequest{}
-	res := res.UpdateAuthorResponse{}
-
-	if err := helpers.URLIntParam(r, &id); err != nil {
+	id, err := helpers.GetIDParam(r)
+	if err != nil {
 		err.Render(w)
 		return
 	}
 
+	body := reqs.UpdateAuthorRequest{}
 	if err := helpers.Decode(r, &body); err != nil {
 		err.Render(w)
 		return
 	}
 
-	if err := c.useCase.UpdateAuthor(int32(id), body, &res); err != nil {
+	resp, err := c.useCase.UpdateAuthor(int32(id), body)
+	if err != nil {
 		err.Render(w)
 		return
 	}
 
-	libs.Render.JSON(w, http.StatusOK, res)
+	libs.Render.JSON(w, http.StatusOK, resp)
 }

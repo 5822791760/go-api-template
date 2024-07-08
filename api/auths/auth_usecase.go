@@ -21,26 +21,30 @@ func NewAuthUseCase(db *sql.DB, authService *AuthService) *AuthUseCase {
 	}
 }
 
-func (u *AuthUseCase) SignUp(body reqs.SignUpRequest, resp *res.SignUpResponse) errs.ErrRenderer {
-	var signInToken types.SignInToken
-
-	if err := u.authService.SignUp(types.SignUpBody(body), &signInToken); err != nil {
-		return err
+func (u *AuthUseCase) SignUp(body reqs.SignUpRequest) (res.SignUpResponse, errs.ErrRenderer) {
+	signInToken, err := u.authService.SignUp(types.SignUpBody(body))
+	if err != nil {
+		return res.SignUpResponse{}, err
 	}
 
-	*resp = res.SignUpResponse(signInToken)
+	resp := res.SignUpResponse{
+		AccessToken:  signInToken.AccessToken,
+		LastSignInAt: signInToken.LastSignInAt,
+	}
 
-	return nil
+	return resp, nil
 }
 
-func (u *AuthUseCase) SignIn(body reqs.SignInRequest, resp *res.SignInResponse) errs.ErrRenderer {
-	var signInToken types.SignInToken
-
-	if err := u.authService.SignInByUserEmail(body.Email, body.Password, &signInToken); err != nil {
-		return err
+func (u *AuthUseCase) SignIn(body reqs.SignInRequest) (res.SignInResponse, errs.ErrRenderer) {
+	signInToken, err := u.authService.SignInByUserEmail(body.Email, body.Password)
+	if err != nil {
+		return res.SignInResponse{}, err
 	}
 
-	*resp = res.SignInResponse(signInToken)
+	resp := res.SignInResponse{
+		AccessToken:  signInToken.AccessToken,
+		LastSignInAt: signInToken.LastSignInAt,
+	}
 
-	return nil
+	return resp, nil
 }

@@ -9,42 +9,38 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func URLIntParam(r *http.Request, id *int32) errs.ErrRenderer {
+func GetIDParam(r *http.Request) (int32, errs.ErrRenderer) {
 	paramReq := chi.URLParam(r, "id")
 
 	if paramReq == "" {
-		return errs.ErrRender{
+		return 0, errs.ErrRender{
 			StatusText: errs.ErrParamNotFound,
 			Code:       http.StatusBadRequest,
 			ErrorText:  "Params id not found",
 		}
 	}
 
-	paramId, err := strconv.Atoi(paramReq)
+	id, err := strconv.Atoi(paramReq)
 	if err != nil {
-		return errs.ErrRender{
+		return 0, errs.ErrRender{
 			StatusText: errs.ErrGeneric,
 			Code:       http.StatusBadRequest,
 			ErrorText:  err.Error(),
 		}
 	}
 
-	*id = int32(paramId)
-
-	return nil
+	return int32(id), nil
 }
 
-func URLParam(r *http.Request, key string, param *string) errs.ErrRenderer {
-	paramReq := chi.URLParam(r, key)
-	if paramReq == "" {
-		return errs.ErrRender{
+func GetURLParam(r *http.Request, key string) (string, errs.ErrRenderer) {
+	param := chi.URLParam(r, key)
+	if param == "" {
+		return param, errs.ErrRender{
 			StatusText: errs.ErrParamNotFound,
 			Code:       http.StatusBadRequest,
 			ErrorText:  fmt.Sprintf("Params %s not found", key),
 		}
 	}
 
-	*param = paramReq
-
-	return nil
+	return param, nil
 }

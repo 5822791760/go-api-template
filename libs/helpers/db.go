@@ -10,10 +10,6 @@ import (
 	. "github.com/go-jet/jet/v2/postgres"
 )
 
-type RowExist struct {
-	Exists bool `json:"exists"`
-}
-
 func CheckAffectedRow(res sql.Result) errs.ErrRenderer {
 	if a, _ := res.RowsAffected(); a == 0 {
 		return errs.NewErr(errors.New("Updated row not found"), errs.ErrQuery, http.StatusNotFound)
@@ -23,14 +19,15 @@ func CheckAffectedRow(res sql.Result) errs.ErrRenderer {
 }
 
 func ShouldNotExists(db *sql.DB, statement SelectStatement) errs.ErrRenderer {
-	var rowExists RowExist
-
-	stmt := SELECT(EXISTS(statement).AS("RowExist.Exists"))
-	if err := stmt.Query(db, &rowExists); err != nil {
+	var selectA struct {
+		Exists bool `json:"exists"`
+	}
+	stmt := SELECT(EXISTS(statement).AS("Exists"))
+	if err := stmt.Query(db, &selectA); err != nil {
 		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
 	}
 
-	if rowExists.Exists == true {
+	if selectA.Exists == true {
 		return errs.NewErr(errors.New("This Data already exist"), errs.ErrQuery, http.StatusBadRequest)
 	}
 
@@ -38,14 +35,15 @@ func ShouldNotExists(db *sql.DB, statement SelectStatement) errs.ErrRenderer {
 }
 
 func ShouldNotExistsTx(db *sql.Tx, statement SelectStatement) errs.ErrRenderer {
-	var rowExists RowExist
-
+	var selectA struct {
+		Exists bool `json:"exists"`
+	}
 	stmt := SELECT(EXISTS(statement).AS("RowExist.Exists"))
-	if err := stmt.Query(db, &rowExists); err != nil {
+	if err := stmt.Query(db, &selectA); err != nil {
 		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
 	}
 
-	if rowExists.Exists == true {
+	if selectA.Exists == true {
 		return errs.NewErr(errors.New("This Data already exist"), errs.ErrQuery, http.StatusBadRequest)
 	}
 

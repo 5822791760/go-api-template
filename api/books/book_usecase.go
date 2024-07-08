@@ -23,7 +23,8 @@ func NewBookUseCase(db *sql.DB, bookService *BookService) *BookUseCase {
 	}
 }
 
-func (u *BookUseCase) GetBooks(res *[]res.GetBooksResponse) errs.ErrRenderer {
+func (u *BookUseCase) GetBooks() ([]res.GetBooksResponse, errs.ErrRenderer) {
+	var resp []res.GetBooksResponse
 	stmt := SELECT(
 		Books.ID.AS("GetBooksResponse.ID"),
 		Books.Name.AS("GetBooksResponse.Name"),
@@ -32,9 +33,9 @@ func (u *BookUseCase) GetBooks(res *[]res.GetBooksResponse) errs.ErrRenderer {
 		Authors.Name.AS("author.Name"),
 	).FROM(Books.LEFT_JOIN(Authors, Authors.ID.EQ(Books.AuthorID)))
 
-	if err := stmt.Query(u.db, res); err != nil {
-		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+	if err := stmt.Query(u.db, &resp); err != nil {
+		return resp, errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
 	}
 
-	return nil
+	return resp, nil
 }
