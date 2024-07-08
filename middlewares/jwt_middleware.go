@@ -13,13 +13,13 @@ func JwtMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
-			errs.RenderErrByString(w, "Authorization header is required", errs.ErrUnAuthorize, http.StatusUnauthorized)
+			errs.NewErrByString("Authorization header is required", http.StatusUnauthorized).Render(w)
 			return
 		}
 
 		bearerToken := strings.Split(authHeader, " ")
 		if len(bearerToken) != 2 || strings.ToLower(bearerToken[0]) != "bearer" {
-			errs.RenderErrByString(w, "Invalid Authorization header format", errs.ErrUnAuthorize, http.StatusUnauthorized)
+			errs.NewErrByString("Invalid Authorization header format", http.StatusUnauthorized).Render(w)
 			return
 		}
 
@@ -27,7 +27,7 @@ func JwtMiddleware(next http.Handler) http.Handler {
 
 		claims, err := helpers.ParseJwt(tokenString)
 		if err != nil {
-			errs.RenderErr(w, err, errs.ErrUnAuthorize, http.StatusUnauthorized)
+			errs.NewErr(err, http.StatusUnauthorized).Render(w)
 			return
 		}
 

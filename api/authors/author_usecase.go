@@ -37,7 +37,7 @@ func (u *AuthorUseCase) GetAuthors() ([]res.GetAuthorsResponse, errs.ErrRenderer
 
 	err := stmt.Query(u.db, &resp)
 	if err != nil {
-		return []res.GetAuthorsResponse{}, errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return []res.GetAuthorsResponse{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	return resp, nil
@@ -65,7 +65,7 @@ func (u *AuthorUseCase) GetAuthor(id int32) (res.GetAuthorResponse, errs.ErrRend
 
 	err := stmt.Query(u.db, &resp)
 	if err != nil {
-		return res.GetAuthorResponse{}, errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return res.GetAuthorResponse{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	return resp, nil

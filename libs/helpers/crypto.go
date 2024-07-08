@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -18,7 +17,7 @@ type JwtPayload struct {
 func GetHashedPassword(password string) (string, errs.ErrRenderer) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 4)
 	if err != nil {
-		return "", errs.NewErr(err, errs.ErrGeneric, http.StatusInternalServerError)
+		return "", errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	hashedPassword := string(bytes)
@@ -29,7 +28,7 @@ func GetHashedPassword(password string) (string, errs.ErrRenderer) {
 func CheckPasswordHash(password, hash string) errs.ErrRenderer {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	if err != nil {
-		return errs.NewErr(errors.New("Password does not match"), errs.ErrValidate, http.StatusBadRequest)
+		return errs.NewErrByString("Password does not match", http.StatusBadRequest)
 	}
 
 	return nil
@@ -43,7 +42,7 @@ func GetEncodedJwt(data JwtPayload) (string, errs.ErrRenderer) {
 	secretKey := []byte(config.GetJwtSecret())
 	encodedToken, err := t.SignedString(secretKey)
 	if err != nil {
-		return encodedToken, errs.NewErr(err, errs.ErrGeneric, http.StatusInternalServerError)
+		return encodedToken, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	return encodedToken, nil
@@ -58,12 +57,12 @@ func ParseJwt(tokenString string) (jwt.MapClaims, errs.ErrRenderer) {
 	})
 
 	if err != nil {
-		return jwt.MapClaims{}, errs.NewErr(err, errs.ErrGeneric, http.StatusInternalServerError)
+		return jwt.MapClaims{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return jwt.MapClaims{}, errs.NewErrByString("Unable to claim token", errs.ErrGeneric, http.StatusInternalServerError)
+		return jwt.MapClaims{}, errs.NewErrByString("Unable to claim token", http.StatusInternalServerError)
 	}
 
 	return claims, nil
@@ -74,7 +73,7 @@ func CurrentUserID(r *http.Request) (int32, errs.ErrRenderer) {
 
 	id, ok := claims["id"].(float64)
 	if !ok {
-		return 0, errs.NewErrByString("id in token not found", errs.ErrGeneric, http.StatusBadRequest)
+		return 0, errs.NewErrByString("id in token not found", http.StatusBadRequest)
 	}
 
 	return int32(id), nil

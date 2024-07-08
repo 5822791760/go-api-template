@@ -12,48 +12,35 @@ type ErrRenderer interface {
 }
 
 type ErrRender struct {
-	StatusText string `json:"status"`          // user-level status message
-	Code       int    `json:"code,omitempty"`  // application-specific error code
-	ErrorText  string `json:"error,omitempty"` // application-level error message, for debugging
+	Code      int             `json:"code"`  // application-specific error code
+	ErrorText string          `json:"error"` // application-level error message, for debugging
+	Context   map[string]bool `json:"context"`
 }
 
-func NewErr(err error, status string, code int) ErrRender {
-	return ErrRender{
-		StatusText: status,
-		Code:       code,
-		ErrorText:  err.Error(),
+func NewErr(err error, code int) *ErrRender {
+	return &ErrRender{
+		Code:      code,
+		ErrorText: err.Error(),
 	}
 }
 
-func NewErrByString(message string, status string, code int) ErrRender {
-	return ErrRender{
-		StatusText: status,
-		Code:       code,
-		ErrorText:  message,
+func NewErrByString(message string, code int) *ErrRender {
+	return &ErrRender{
+		Code:      code,
+		ErrorText: message,
 	}
 }
 
-func RenderErr(w http.ResponseWriter, err error, status string, code int) {
-	libs.Render.JSON(w, code, ErrRender{
-		StatusText: status,
-		Code:       code,
-		ErrorText:  err.Error(),
-	})
-}
-
-func RenderErrByString(w http.ResponseWriter, message string, status string, code int) {
-	libs.Render.JSON(w, code, ErrRender{
-		StatusText: status,
-		Code:       code,
-		ErrorText:  message,
-	})
-}
-
-func (e ErrRender) Render(w http.ResponseWriter) {
+func (e *ErrRender) Render(w http.ResponseWriter) {
 	libs.Render.JSON(w, e.Code, e)
 	return
 }
 
-func (e ErrRender) Error() string {
+func (e *ErrRender) Error() string {
 	return e.ErrorText
+}
+
+func (e *ErrRender) WithContext(context map[string]bool) *ErrRender {
+	e.Context = context
+	return e
 }

@@ -34,7 +34,7 @@ func (u *BookUseCase) GetBooks() ([]res.GetBooksResponse, errs.ErrRenderer) {
 	).FROM(Books.LEFT_JOIN(Authors, Authors.ID.EQ(Books.AuthorID)))
 
 	if err := stmt.Query(u.db, &resp); err != nil {
-		return resp, errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return resp, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	return resp, nil

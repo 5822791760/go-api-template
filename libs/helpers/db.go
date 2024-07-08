@@ -12,7 +12,7 @@ import (
 
 func CheckAffectedRow(res sql.Result) errs.ErrRenderer {
 	if a, _ := res.RowsAffected(); a == 0 {
-		return errs.NewErr(errors.New("Updated row not found"), errs.ErrQuery, http.StatusNotFound)
+		return errs.NewErr(errors.New("Updated row not found"), http.StatusNotFound)
 	}
 
 	return nil
@@ -24,11 +24,11 @@ func ShouldNotExists(db *sql.DB, statement SelectStatement) errs.ErrRenderer {
 	}
 	stmt := SELECT(EXISTS(statement).AS("Exists"))
 	if err := stmt.Query(db, &selectA); err != nil {
-		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	if selectA.Exists == true {
-		return errs.NewErr(errors.New("This Data already exist"), errs.ErrQuery, http.StatusBadRequest)
+		return errs.NewErr(errors.New("This Data already exist"), http.StatusBadRequest)
 	}
 
 	return nil
@@ -40,11 +40,11 @@ func ShouldNotExistsTx(db *sql.Tx, statement SelectStatement) errs.ErrRenderer {
 	}
 	stmt := SELECT(EXISTS(statement).AS("RowExist.Exists"))
 	if err := stmt.Query(db, &selectA); err != nil {
-		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	if selectA.Exists == true {
-		return errs.NewErr(errors.New("This Data already exist"), errs.ErrQuery, http.StatusBadRequest)
+		return errs.NewErr(errors.New("This Data already exist"), http.StatusBadRequest)
 	}
 
 	return nil

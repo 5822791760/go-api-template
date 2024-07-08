@@ -57,7 +57,7 @@ func (s *AuthService) SignUp(body types.SignUpBody) (types.SignInToken, errs.Err
 		Password string
 	}
 	if err := stmt.Query(tx, &returningA); err != nil {
-		return types.SignInToken{}, errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return types.SignInToken{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	token, err := s.GetAccessToken(returningA.ID)
@@ -75,7 +75,7 @@ func (s *AuthService) SignUp(body types.SignUpBody) (types.SignInToken, errs.Err
 		LastSignInAt *time.Time
 	}
 	if err := updateStmt.Query(tx, &returningB); err != nil {
-		return types.SignInToken{}, errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return types.SignInToken{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	tx.Commit()
@@ -98,7 +98,7 @@ func (s *AuthService) GetAccessToken(userID int32) (string, errs.ErrRenderer) {
 func (s *AuthService) SignInByUserID(userID int32, password string) (types.SignInToken, errs.ErrRenderer) {
 	tx, errA := s.db.Begin()
 	if errA != nil {
-		return types.SignInToken{}, errs.NewErr(errA, errs.ErrGeneric, http.StatusInternalServerError)
+		return types.SignInToken{}, errs.NewErr(errA, http.StatusInternalServerError)
 	}
 	defer tx.Rollback()
 
@@ -121,7 +121,7 @@ func (s *AuthService) SignInByUserID(userID int32, password string) (types.SignI
 		LastSignInAt *time.Time
 	}
 	if err := updateStmt.Query(tx, &returningA); err != nil {
-		return types.SignInToken{}, errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return types.SignInToken{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	tx.Commit()
@@ -135,7 +135,7 @@ func (s *AuthService) SignInByUserID(userID int32, password string) (types.SignI
 func (s *AuthService) SignInByUserEmail(email string, password string) (types.SignInToken, errs.ErrRenderer) {
 	tx, errA := s.db.Begin()
 	if errA != nil {
-		return types.SignInToken{}, errs.NewErr(errA, errs.ErrGeneric, http.StatusInternalServerError)
+		return types.SignInToken{}, errs.NewErr(errA, http.StatusInternalServerError)
 	}
 	defer tx.Rollback()
 
@@ -149,7 +149,7 @@ func (s *AuthService) SignInByUserEmail(email string, password string) (types.Si
 		Password string
 	}
 	if err := stmt.Query(s.db, &selectA); err != nil {
-		return types.SignInToken{}, errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return types.SignInToken{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	if err := helpers.CheckPasswordHash(password, selectA.Password); err != nil {
@@ -171,7 +171,7 @@ func (s *AuthService) SignInByUserEmail(email string, password string) (types.Si
 		LastSignInAt *time.Time
 	}
 	if err := updateStmt.Query(s.db, &returningA); err != nil {
-		return types.SignInToken{}, errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return types.SignInToken{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	tx.Commit()
@@ -193,7 +193,7 @@ func (s *AuthService) CheckPasswordByUserId(userID int32, password string) errs.
 		Password string
 	}
 	if err := stmt.Query(s.db, &selectA); err != nil {
-		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	if err := helpers.CheckPasswordHash(password, selectA.Password); err != nil {
@@ -214,7 +214,7 @@ func (s *AuthService) CheckPasswordByUserEmail(email string, password string) er
 		Password string
 	}
 	if err := stmt.Query(s.db, &selectA); err != nil {
-		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	if err := helpers.CheckPasswordHash(password, selectA.Password); err != nil {

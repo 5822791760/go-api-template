@@ -13,20 +13,12 @@ func GetIDParam(r *http.Request) (int32, errs.ErrRenderer) {
 	paramReq := chi.URLParam(r, "id")
 
 	if paramReq == "" {
-		return 0, errs.ErrRender{
-			StatusText: errs.ErrParamNotFound,
-			Code:       http.StatusBadRequest,
-			ErrorText:  "Params id not found",
-		}
+		return 0, errs.NewErrByString("Params id not found", http.StatusBadRequest)
 	}
 
 	id, err := strconv.Atoi(paramReq)
 	if err != nil {
-		return 0, errs.ErrRender{
-			StatusText: errs.ErrGeneric,
-			Code:       http.StatusBadRequest,
-			ErrorText:  err.Error(),
-		}
+		return 0, errs.NewErr(err, http.StatusBadRequest)
 	}
 
 	return int32(id), nil
@@ -35,11 +27,7 @@ func GetIDParam(r *http.Request) (int32, errs.ErrRenderer) {
 func GetURLParam(r *http.Request, key string) (string, errs.ErrRenderer) {
 	param := chi.URLParam(r, key)
 	if param == "" {
-		return param, errs.ErrRender{
-			StatusText: errs.ErrParamNotFound,
-			Code:       http.StatusBadRequest,
-			ErrorText:  fmt.Sprintf("Params %s not found", key),
-		}
+		return param, errs.NewErrByString(fmt.Sprintf("Params %s not found", key), http.StatusBadRequest)
 	}
 
 	return param, nil

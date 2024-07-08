@@ -25,7 +25,7 @@ func NewAuthorService(db *sql.DB) *AuthorService {
 func (s *AuthorService) CreateAuthor(body reqs.CreateAuthorRequest) errs.ErrRenderer {
 	stmt := Authors.INSERT(Authors.ID, Authors.Name, Authors.Bio).VALUES(DEFAULT, body.Name, body.Bio)
 	if _, err := stmt.Exec(s.db); err != nil {
-		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	return nil
@@ -45,7 +45,7 @@ func (s *AuthorService) UpdateAuthor(id int32, body reqs.UpdateAuthorRequest) er
 
 	res, err := stmt.Exec(s.db)
 	if err != nil {
-		return errs.NewErr(err, errs.ErrQuery, http.StatusInternalServerError)
+		return errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	if err := helpers.CheckAffectedRow(res); err != nil {

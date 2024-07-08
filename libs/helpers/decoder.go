@@ -15,11 +15,11 @@ var (
 
 func Decode(r *http.Request, dst interface{}) errs.ErrRenderer {
 	if err := json.NewDecoder(r.Body).Decode(dst); err != nil {
-		return errs.NewErr(err, errs.ErrDecode, http.StatusInternalServerError)
+		return errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	if err := validate.Struct(dst); err != nil {
-		return errs.NewErr(err, errs.ErrValidate, http.StatusBadRequest)
+		return errs.NewErr(err, http.StatusBadRequest)
 	}
 
 	return nil
