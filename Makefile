@@ -14,7 +14,7 @@ up:
 down:
 	docker-compose down --remove-orphans
 
-dev: up .wait-for-pg
+dev: up .wait-for-pg db-up
 	./cmd/air -c .air.toml
 
 build:

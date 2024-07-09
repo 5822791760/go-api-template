@@ -4,8 +4,8 @@ tmp_dir = "cmd"
 
 [build]
   args_bin = []
-  bin = "./cmd/api"
-  cmd = "go build -o ./cmd/api main.go"
+  bin = "./cmd/main"
+  cmd = "go build -o ./cmd/main main.go"
   delay = 1000
   exclude_dir = ["_docker_volumes", "vendor", "cmd"]
   exclude_file = []

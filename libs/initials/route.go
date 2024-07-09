@@ -6,7 +6,7 @@ import (
 	"github.com/5822791760/go-api-template/api/authors"
 	"github.com/5822791760/go-api-template/api/auths"
 	"github.com/5822791760/go-api-template/api/books"
-	"github.com/5822791760/go-api-template/middlewares"
+	. "github.com/5822791760/go-api-template/middlewares"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -41,7 +41,7 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 
 			// JWT Protected
 			r.Route("/", func(r chi.Router) {
-				r.Use(middlewares.JwtMiddleware)
+				r.Use(JwtMiddleware)
 
 				r.Get("/authors", authorController.GetAuthors)
 				r.Post("/authors", authorController.CreateAuthor)
