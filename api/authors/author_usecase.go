@@ -24,8 +24,8 @@ func NewAuthorUseCase(db *sql.DB, authorService *AuthorService) *AuthorUseCase {
 	}
 }
 
-func (u *AuthorUseCase) GetAuthors() ([]res.GetAuthorsResponse, errs.ErrRenderer) {
-	var resp []res.GetAuthorsResponse
+func (u *AuthorUseCase) GetAuthors() ([]res.GetAuthors, errs.ErrRenderer) {
+	resp := []res.GetAuthors{}
 	stmt := SELECT(
 		Authors.ID.AS("GetAuthorsResponse.ID"),
 		Authors.Name.AS("GetAuthorsResponse.Name"),
@@ -37,14 +37,14 @@ func (u *AuthorUseCase) GetAuthors() ([]res.GetAuthorsResponse, errs.ErrRenderer
 
 	err := stmt.Query(u.db, &resp)
 	if err != nil {
-		return []res.GetAuthorsResponse{}, errs.NewErr(err, http.StatusInternalServerError)
+		return []res.GetAuthors{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	return resp, nil
 }
 
-func (u *AuthorUseCase) GetAuthor(id int32) (res.GetAuthorResponse, errs.ErrRenderer) {
-	var resp res.GetAuthorResponse
+func (u *AuthorUseCase) GetAuthor(id int32) (res.GetAuthor, errs.ErrRenderer) {
+	var resp res.GetAuthor
 	stmt := SELECT(
 		Authors.ID.AS("GetAuthorResponse.ID"),
 		Authors.Name.AS("GetAuthorResponse.Name"),
@@ -65,30 +65,30 @@ func (u *AuthorUseCase) GetAuthor(id int32) (res.GetAuthorResponse, errs.ErrRend
 
 	err := stmt.Query(u.db, &resp)
 	if err != nil {
-		return res.GetAuthorResponse{}, errs.NewErr(err, http.StatusInternalServerError)
+		return res.GetAuthor{}, errs.NewErr(err, http.StatusInternalServerError)
 	}
 
 	return resp, nil
 }
 
-func (u *AuthorUseCase) CreateAuthor(body reqs.CreateAuthorRequest) (res.CreateAuthorResponse, errs.ErrRenderer) {
+func (u *AuthorUseCase) CreateAuthor(body reqs.CreateAuthor) (res.CreateAuthor, errs.ErrRenderer) {
 	if err := u.authorService.CreateAuthor(body); err != nil {
-		return res.CreateAuthorResponse{}, err
+		return res.CreateAuthor{}, err
 	}
 
-	resp := res.CreateAuthorResponse{
+	resp := res.CreateAuthor{
 		Success: true,
 	}
 
 	return resp, nil
 }
 
-func (u *AuthorUseCase) UpdateAuthor(id int32, body reqs.UpdateAuthorRequest) (res.UpdateAuthorResponse, errs.ErrRenderer) {
+func (u *AuthorUseCase) UpdateAuthor(id int32, body reqs.UpdateAuthor) (res.UpdateAuthor, errs.ErrRenderer) {
 	if err := u.authorService.UpdateAuthor(id, body); err != nil {
-		return res.UpdateAuthorResponse{}, err
+		return res.UpdateAuthor{}, err
 	}
 
-	return res.UpdateAuthorResponse{
+	return res.UpdateAuthor{
 		Success: true,
 	}, nil
 }

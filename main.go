@@ -10,8 +10,22 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	_ "github.com/5822791760/go-api-template/docs"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
+//	@title			Swagger Example API
+//	@version		1.0
+//	@description	This is a sample server Petstore server.
+//	@termsOfService	http://swagger.io/terms/
+
+//	@host		localhost:8080
+//	@BasePath	/api/v1
+
+// @securityDefinitions.apikey	Bearer
+// @in							header
+// @name						Authorization
 func main() {
 	if err := initials.InitConfig(); err != nil {
 		log.Fatalf("Error reading config file: %s", err)
@@ -26,12 +40,23 @@ func main() {
 	defer db.Close()
 
 	r := chi.NewRouter()
+
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	initials.InitRoutes(r, db)
-
 	const Port = 8080
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("/swagger/doc.json"),
+		httpSwagger.UIConfig(map[string]string{
+			"persistAuthorization": "true",
+		}),
+	))
+
+	if err := initials.InitRoutes(r, db); err != nil {
+		log.Fatalf("Error printing routes: %s", err)
+		return
+	}
 
 	fmt.Printf("\n======================================\n\n")
 	fmt.Printf("Listening to port %d", Port)

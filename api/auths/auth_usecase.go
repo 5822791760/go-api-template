@@ -21,13 +21,13 @@ func NewAuthUseCase(db *sql.DB, authService *AuthService) *AuthUseCase {
 	}
 }
 
-func (u *AuthUseCase) SignUp(body reqs.SignUpRequest) (res.SignUpResponse, errs.ErrRenderer) {
+func (u *AuthUseCase) SignUp(body reqs.SignUp) (res.SignUp, errs.ErrRenderer) {
 	signInToken, err := u.authService.SignUp(types.SignUpBody(body))
 	if err != nil {
-		return res.SignUpResponse{}, err
+		return res.SignUp{}, err
 	}
 
-	resp := res.SignUpResponse{
+	resp := res.SignUp{
 		AccessToken:  signInToken.AccessToken,
 		LastSignInAt: signInToken.LastSignInAt,
 	}
@@ -35,13 +35,13 @@ func (u *AuthUseCase) SignUp(body reqs.SignUpRequest) (res.SignUpResponse, errs.
 	return resp, nil
 }
 
-func (u *AuthUseCase) SignIn(body reqs.SignInRequest) (res.SignInResponse, errs.ErrRenderer) {
+func (u *AuthUseCase) SignIn(body reqs.SignIn) (res.SignIn, errs.ErrRenderer) {
 	signInToken, err := u.authService.SignInByUserEmail(body.Email, body.Password)
 	if err != nil {
-		return res.SignInResponse{}, err
+		return res.SignIn{}, err
 	}
 
-	resp := res.SignInResponse{
+	resp := res.SignIn{
 		AccessToken:  signInToken.AccessToken,
 		LastSignInAt: signInToken.LastSignInAt,
 	}

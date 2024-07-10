@@ -23,8 +23,8 @@ func NewBookUseCase(db *sql.DB, bookService *BookService) *BookUseCase {
 	}
 }
 
-func (u *BookUseCase) GetBooks() ([]res.GetBooksResponse, errs.ErrRenderer) {
-	resp := []res.GetBooksResponse{}
+func (u *BookUseCase) GetBooks() ([]res.GetBooks, errs.ErrRenderer) {
+	resp := []res.GetBooks{}
 	stmt := SELECT(
 		Books.ID.AS("GetBooksResponse.ID"),
 		Books.Name.AS("GetBooksResponse.Name"),

@@ -1,6 +1,6 @@
 package res
 
-type SignInResponse struct {
+type SignIn struct {
 	AccessToken  string `json:"access_token"`
 	LastSignInAt string `json:"last_sign_in_at"`
 }

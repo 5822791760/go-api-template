@@ -1,0 +1,379 @@
+basePath: /api/v1
+definitions:
+  errs.ErrRender:
+    properties:
+      code:
+        description: application-specific error code
+        type: integer
+      context:
+        additionalProperties:
+          type: boolean
+        type: object
+      error:
+        description: application-level error message, for debugging
+        type: string
+    type: object
+  reqs.CreateAuthor:
+    properties:
+      bio:
+        maxLength: 50
+        minLength: 1
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - bio
+    - name
+    type: object
+  reqs.SignIn:
+    properties:
+      email:
+        maxLength: 255
+        minLength: 1
+        type: string
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  reqs.SignUp:
+    properties:
+      email:
+        maxLength: 255
+        minLength: 1
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  reqs.UpdateAuthor:
+    properties:
+      bio:
+        maxLength: 50
+        minLength: 1
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+    type: object
+  res.CreateAuthor:
+    properties:
+      success:
+        type: boolean
+    type: object
+  res.GetAuthor:
+    properties:
+      bio:
+        type: string
+      books:
+        items:
+          $ref: '#/definitions/res.getAuthorBooks'
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  res.GetAuthors:
+    properties:
+      bio:
+        type: string
+      books:
+        items:
+          $ref: '#/definitions/res.books'
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  res.GetBooks:
+    properties:
+      author:
+        $ref: '#/definitions/res.author'
+      book_no:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      summary:
+        type: string
+    type: object
+  res.SignIn:
+    properties:
+      access_token:
+        type: string
+      last_sign_in_at:
+        type: string
+    type: object
+  res.SignUp:
+    properties:
+      access_token:
+        type: string
+      last_sign_in_at:
+        type: string
+    type: object
+  res.UpdateAuthor:
+    properties:
+      success:
+        type: boolean
+    type: object
+  res.author:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  res.books:
+    properties:
+      book_no:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  res.getAuthorBooks:
+    properties:
+      book_no:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server Petstore server.
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /authors:
+    get:
+      consumes:
+      - application/json
+      description: List All Authors
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/res.GetAuthors'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      security:
+      - Bearer: []
+      tags:
+      - authors
+    post:
+      consumes:
+      - application/json
+      description: Create an Author
+      parameters:
+      - description: Author info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/reqs.CreateAuthor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.CreateAuthor'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      security:
+      - Bearer: []
+      tags:
+      - authors
+  /authors/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get One Author
+      parameters:
+      - description: Author ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.GetAuthor'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      security:
+      - Bearer: []
+      tags:
+      - authors
+    patch:
+      consumes:
+      - application/json
+      description: Update an Author
+      parameters:
+      - description: Author update info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/reqs.UpdateAuthor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.UpdateAuthor'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      security:
+      - Bearer: []
+      tags:
+      - authors
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: List All Books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/res.GetBooks'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      security:
+      - Bearer: []
+      tags:
+      - books
+  /public/auths/sign_in:
+    post:
+      consumes:
+      - application/json
+      description: Signin using email, password
+      parameters:
+      - description: Sign in information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/reqs.SignIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.SignIn'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      tags:
+      - auths
+  /public/auths/sign_up:
+    post:
+      consumes:
+      - application/json
+      description: Register User using user info
+      parameters:
+      - description: Sign up information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/reqs.SignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.SignUp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      tags:
+      - auths
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

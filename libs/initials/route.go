@@ -2,15 +2,17 @@ package initials
 
 import (
 	"database/sql"
+	"fmt"
+	"net/http"
 
 	"github.com/5822791760/go-api-template/api/authors"
 	"github.com/5822791760/go-api-template/api/auths"
 	"github.com/5822791760/go-api-template/api/books"
-	. "github.com/5822791760/go-api-template/middlewares"
+	"github.com/5822791760/go-api-template/middlewares"
 	"github.com/go-chi/chi/v5"
 )
 
-func InitRoutes(r *chi.Mux, db *sql.DB) {
+func InitRoutes(r *chi.Mux, db *sql.DB) error {
 	// SERVICES =======
 	authorService := authors.NewAuthorService(db)
 	bookService := books.NewBookService(db)
@@ -41,7 +43,7 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 
 			// JWT Protected
 			r.Route("/", func(r chi.Router) {
-				r.Use(JwtMiddleware)
+				r.Use(middlewares.JwtAuth)
 
 				r.Get("/authors", authorController.GetAuthors)
 				r.Post("/authors", authorController.CreateAuthor)
@@ -54,4 +56,25 @@ func InitRoutes(r *chi.Mux, db *sql.DB) {
 
 		})
 	})
+
+	if err := PrintRoutes(r); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func PrintRoutes(r chi.Router) error {
+	fmt.Println()
+
+	walkFunc := func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
+		fmt.Printf("%s %s\n", method, route)
+		return nil
+	}
+
+	if err := chi.Walk(r, walkFunc); err != nil {
+		return err
+	}
+
+	return nil
 }

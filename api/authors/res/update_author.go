@@ -1,5 +1,5 @@
 package res
 
-type UpdateAuthorResponse struct {
+type UpdateAuthor struct {
 	Success bool `json:"success"`
 }

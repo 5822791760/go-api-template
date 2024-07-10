@@ -22,7 +22,7 @@ func NewAuthorService(db *sql.DB) *AuthorService {
 	}
 }
 
-func (s *AuthorService) CreateAuthor(body reqs.CreateAuthorRequest) errs.ErrRenderer {
+func (s *AuthorService) CreateAuthor(body reqs.CreateAuthor) errs.ErrRenderer {
 	stmt := Authors.INSERT(Authors.ID, Authors.Name, Authors.Bio).VALUES(DEFAULT, body.Name, body.Bio)
 	if _, err := stmt.Exec(s.db); err != nil {
 		return errs.NewErr(err, http.StatusInternalServerError)
@@ -31,7 +31,7 @@ func (s *AuthorService) CreateAuthor(body reqs.CreateAuthorRequest) errs.ErrRend
 	return nil
 }
 
-func (s *AuthorService) UpdateAuthor(id int32, body reqs.UpdateAuthorRequest) errs.ErrRenderer {
+func (s *AuthorService) UpdateAuthor(id int32, body reqs.UpdateAuthor) errs.ErrRenderer {
 	stmt := Authors.
 		UPDATE(
 			Authors.Name,

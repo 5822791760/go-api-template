@@ -6,7 +6,7 @@ type getAuthorBooks struct {
 	Bookno string `json:"book_no"`
 }
 
-type GetAuthorResponse struct {
+type GetAuthor struct {
 	ID   int32  `json:"id"`
 	Name string `json:"name"`
 	Bio  string `json:"bio"`

@@ -18,8 +18,20 @@ func NewAuthController(useCase *AuthUseCase) *AuthController {
 	}
 }
 
+// SignUp godoc
+//
+//	@Description	Register User using user info
+//	@Tags			auths
+//	@Accept			json
+//	@Produce		json
+//
+//	@Param			request	body		reqs.SignUp	true	"Sign up information"
+//
+//	@Success		200		{object}	res.SignUp
+//	@Failure		400		{object}	errs.ErrRender
+//	@Router			/public/auths/sign_up [post]
 func (c *AuthController) SignUp(w http.ResponseWriter, r *http.Request) {
-	body := reqs.SignUpRequest{}
+	body := reqs.SignUp{}
 	if err := helpers.Decode(r, &body); err != nil {
 		err.Render(w)
 		return
@@ -41,8 +53,20 @@ func (c *AuthController) SignUp(w http.ResponseWriter, r *http.Request) {
 	libs.Render.JSON(w, http.StatusCreated, resp)
 }
 
+// SignIn godoc
+//
+//	@Description	Signin using email, password
+//	@Tags			auths
+//	@Accept			json
+//	@Produce		json
+//
+//	@Param			request		body		reqs.SignIn	true	"Sign in information"
+//
+//	@Success		200			{object}	res.SignIn
+//	@Failure		400,500,401	{object}	errs.ErrRender
+//	@Router			/public/auths/sign_in [post]
 func (c *AuthController) SignIn(w http.ResponseWriter, r *http.Request) {
-	body := reqs.SignInRequest{}
+	body := reqs.SignIn{}
 	if err := helpers.Decode(r, &body); err != nil {
 		err.Render(w)
 		return
