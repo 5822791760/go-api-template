@@ -17,11 +17,15 @@ type booksTable struct {
 	postgres.Table
 
 	// Columns
-	ID       postgres.ColumnInteger
-	Name     postgres.ColumnString
-	Bookno   postgres.ColumnString
-	Summary  postgres.ColumnString
-	AuthorID postgres.ColumnInteger
+	ID        postgres.ColumnInteger
+	Name      postgres.ColumnString
+	Bookno    postgres.ColumnString
+	Price     postgres.ColumnFloat
+	Summary   postgres.ColumnString
+	AuthorID  postgres.ColumnInteger
+	Amount    postgres.ColumnInteger
+	CreatedAt postgres.ColumnTimestampz
+	UpdatedAt postgres.ColumnTimestampz
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -62,24 +66,32 @@ func newBooksTable(schemaName, tableName, alias string) *BooksTable {
 
 func newBooksTableImpl(schemaName, tableName, alias string) booksTable {
 	var (
-		IDColumn       = postgres.IntegerColumn("id")
-		NameColumn     = postgres.StringColumn("name")
-		BooknoColumn   = postgres.StringColumn("bookno")
-		SummaryColumn  = postgres.StringColumn("summary")
-		AuthorIDColumn = postgres.IntegerColumn("author_id")
-		allColumns     = postgres.ColumnList{IDColumn, NameColumn, BooknoColumn, SummaryColumn, AuthorIDColumn}
-		mutableColumns = postgres.ColumnList{NameColumn, BooknoColumn, SummaryColumn, AuthorIDColumn}
+		IDColumn        = postgres.IntegerColumn("id")
+		NameColumn      = postgres.StringColumn("name")
+		BooknoColumn    = postgres.StringColumn("bookno")
+		PriceColumn     = postgres.FloatColumn("price")
+		SummaryColumn   = postgres.StringColumn("summary")
+		AuthorIDColumn  = postgres.IntegerColumn("author_id")
+		AmountColumn    = postgres.IntegerColumn("amount")
+		CreatedAtColumn = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn = postgres.TimestampzColumn("updated_at")
+		allColumns      = postgres.ColumnList{IDColumn, NameColumn, BooknoColumn, PriceColumn, SummaryColumn, AuthorIDColumn, AmountColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns  = postgres.ColumnList{NameColumn, BooknoColumn, PriceColumn, SummaryColumn, AuthorIDColumn, AmountColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return booksTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:       IDColumn,
-		Name:     NameColumn,
-		Bookno:   BooknoColumn,
-		Summary:  SummaryColumn,
-		AuthorID: AuthorIDColumn,
+		ID:        IDColumn,
+		Name:      NameColumn,
+		Bookno:    BooknoColumn,
+		Price:     PriceColumn,
+		Summary:   SummaryColumn,
+		AuthorID:  AuthorIDColumn,
+		Amount:    AmountColumn,
+		CreatedAt: CreatedAtColumn,
+		UpdatedAt: UpdatedAtColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

@@ -36,7 +36,7 @@ drop-db:
 	docker-compose exec postgres dropdb -U ${DB_USER} --if-exists ${DB_DATABASE}
 	docker-compose exec postgres createdb -U ${DB_USER} ${DB_DATABASE}
 
-reset-db: drop-db db-up
+reset-db: drop-db db-up gen
 
 db-status:
 	./cmd/goose -dir=".gen/migrations" postgres ${DB_STRING} status

@@ -248,6 +248,177 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create a Book",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "books"
+                ],
+                "parameters": [
+                    {
+                        "description": "Book info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/reqs.CreateBook"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.CreateBook"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrRender"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrRender"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrRender"
+                        }
+                    }
+                }
+            }
+        },
+        "/books/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update a Book",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "books"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Book info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/reqs.UpdateBook"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.UpdateBook"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrRender"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrRender"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrRender"
+                        }
+                    }
+                }
+            }
+        },
+        "/books/{id}/buy": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Buy a Book",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "books"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.BuyBook"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrRender"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrRender"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrRender"
+                        }
+                    }
+                }
             }
         },
         "/public/auths/sign_in": {
@@ -380,6 +551,43 @@ const docTemplate = `{
                 }
             }
         },
+        "reqs.CreateBook": {
+            "type": "object",
+            "required": [
+                "amount",
+                "author_id",
+                "bookno",
+                "name",
+                "price"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "author_id": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "bookno": {
+                    "type": "string",
+                    "maxLength": 25,
+                    "minLength": 1
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 25,
+                    "minLength": 1
+                },
+                "price": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "summary": {
+                    "type": "string"
+                }
+            }
+        },
         "reqs.SignIn": {
             "type": "object",
             "required": [
@@ -439,7 +647,66 @@ const docTemplate = `{
                 }
             }
         },
+        "reqs.UpdateBook": {
+            "type": "object",
+            "required": [
+                "amount",
+                "author_id",
+                "bookno",
+                "name",
+                "price"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "author_id": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "bookno": {
+                    "type": "string",
+                    "maxLength": 25,
+                    "minLength": 1
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 25,
+                    "minLength": 1
+                },
+                "price": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "summary": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.BuyBook": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "res.CreateAuthor": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "res.CreateBook": {
             "type": "object",
             "properties": {
                 "success": {
@@ -537,6 +804,35 @@ const docTemplate = `{
                 }
             }
         },
+        "res.UpdateBook": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "author_id": {
+                    "type": "integer"
+                },
+                "bookno": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "res.author": {
             "type": "object",
             "properties": {
@@ -589,7 +885,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "localhost:3000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Swagger Example API",

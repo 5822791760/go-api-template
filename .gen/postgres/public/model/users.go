@@ -16,6 +16,7 @@ type Users struct {
 	Email        string
 	Password     string
 	Name         string
+	Cash         float64
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	LastSignInAt *time.Time

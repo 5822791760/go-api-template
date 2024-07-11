@@ -21,6 +21,7 @@ type usersTable struct {
 	Email        postgres.ColumnString
 	Password     postgres.ColumnString
 	Name         postgres.ColumnString
+	Cash         postgres.ColumnFloat
 	CreatedAt    postgres.ColumnTimestampz
 	UpdatedAt    postgres.ColumnTimestampz
 	LastSignInAt postgres.ColumnTimestampz
@@ -68,11 +69,12 @@ func newUsersTableImpl(schemaName, tableName, alias string) usersTable {
 		EmailColumn        = postgres.StringColumn("email")
 		PasswordColumn     = postgres.StringColumn("password")
 		NameColumn         = postgres.StringColumn("name")
+		CashColumn         = postgres.FloatColumn("cash")
 		CreatedAtColumn    = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn    = postgres.TimestampzColumn("updated_at")
 		LastSignInAtColumn = postgres.TimestampzColumn("last_sign_in_at")
-		allColumns         = postgres.ColumnList{IDColumn, EmailColumn, PasswordColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, LastSignInAtColumn}
-		mutableColumns     = postgres.ColumnList{EmailColumn, PasswordColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, LastSignInAtColumn}
+		allColumns         = postgres.ColumnList{IDColumn, EmailColumn, PasswordColumn, NameColumn, CashColumn, CreatedAtColumn, UpdatedAtColumn, LastSignInAtColumn}
+		mutableColumns     = postgres.ColumnList{EmailColumn, PasswordColumn, NameColumn, CashColumn, CreatedAtColumn, UpdatedAtColumn, LastSignInAtColumn}
 	)
 
 	return usersTable{
@@ -83,6 +85,7 @@ func newUsersTableImpl(schemaName, tableName, alias string) usersTable {
 		Email:        EmailColumn,
 		Password:     PasswordColumn,
 		Name:         NameColumn,
+		Cash:         CashColumn,
 		CreatedAt:    CreatedAtColumn,
 		UpdatedAt:    UpdatedAtColumn,
 		LastSignInAt: LastSignInAtColumn,

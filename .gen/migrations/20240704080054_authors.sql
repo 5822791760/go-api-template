@@ -3,7 +3,9 @@
 CREATE TABLE authors (
   id   SERIAL PRIMARY KEY,
   name text      NOT NULL,
-  bio  text
+  bio  text,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 -- +goose StatementEnd
 

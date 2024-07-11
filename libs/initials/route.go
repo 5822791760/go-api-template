@@ -51,7 +51,9 @@ func InitRoutes(r *chi.Mux, db *sql.DB) error {
 				r.Get("/authors/{id}", authorController.GetAuthor)
 
 				r.Get("/books", bookController.GetBooks)
-
+				r.Post("/books", bookController.CreateBook)
+				r.Put("/books/{id}", bookController.UpdateBook)
+				r.Patch("/books/{id}/buy", bookController.BuyBook)
 			})
 
 		})

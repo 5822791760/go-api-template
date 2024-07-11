@@ -11,10 +11,12 @@ import (
 	"time"
 )
 
-type Authors struct {
-	ID        int32 `sql:"primary_key"`
-	Name      string
-	Bio       *string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+type BookSlips struct {
+	ID          int32 `sql:"primary_key"`
+	PaidAmount  float64
+	BookID      *int32
+	CreatedByID *int32
+	CreatedAt   time.Time
+	Buyer       string
+	BookName    string
 }

@@ -17,9 +17,11 @@ type authorsTable struct {
 	postgres.Table
 
 	// Columns
-	ID   postgres.ColumnInteger
-	Name postgres.ColumnString
-	Bio  postgres.ColumnString
+	ID        postgres.ColumnInteger
+	Name      postgres.ColumnString
+	Bio       postgres.ColumnString
+	CreatedAt postgres.ColumnTimestampz
+	UpdatedAt postgres.ColumnTimestampz
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -60,20 +62,24 @@ func newAuthorsTable(schemaName, tableName, alias string) *AuthorsTable {
 
 func newAuthorsTableImpl(schemaName, tableName, alias string) authorsTable {
 	var (
-		IDColumn       = postgres.IntegerColumn("id")
-		NameColumn     = postgres.StringColumn("name")
-		BioColumn      = postgres.StringColumn("bio")
-		allColumns     = postgres.ColumnList{IDColumn, NameColumn, BioColumn}
-		mutableColumns = postgres.ColumnList{NameColumn, BioColumn}
+		IDColumn        = postgres.IntegerColumn("id")
+		NameColumn      = postgres.StringColumn("name")
+		BioColumn       = postgres.StringColumn("bio")
+		CreatedAtColumn = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn = postgres.TimestampzColumn("updated_at")
+		allColumns      = postgres.ColumnList{IDColumn, NameColumn, BioColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns  = postgres.ColumnList{NameColumn, BioColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return authorsTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:   IDColumn,
-		Name: NameColumn,
-		Bio:  BioColumn,
+		ID:        IDColumn,
+		Name:      NameColumn,
+		Bio:       BioColumn,
+		CreatedAt: CreatedAtColumn,
+		UpdatedAt: UpdatedAtColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

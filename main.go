@@ -20,7 +20,7 @@ import (
 //	@description	This is a sample server Petstore server.
 //	@termsOfService	http://swagger.io/terms/
 
-//	@host		localhost:8080
+//	@host		localhost:3000
 //	@BasePath	/api/v1
 
 // @securityDefinitions.apikey	Bearer
@@ -44,10 +44,10 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	const Port = 8080
+	const Port = 3000
 
-	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("/swagger/doc.json"),
+	r.Get("/api/documentation/*", httpSwagger.Handler(
+		httpSwagger.URL("/api/documentation/doc.json"),
 		httpSwagger.UIConfig(map[string]string{
 			"persistAuthorization": "true",
 		}),

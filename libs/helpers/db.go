@@ -53,3 +53,12 @@ func ShouldNotExistsTx(db *sql.Tx, statement SelectStatement) errs.ErrRenderer {
 func FormatDateTime(date interface{ Format(string) string }) string {
 	return date.Format(time.RFC3339)
 }
+
+func Transactions(db *sql.DB) (*sql.Tx, errs.ErrRenderer) {
+	tx, err := db.Begin()
+	if err != nil {
+		return &sql.Tx{}, errs.NewErr(err, http.StatusInternalServerError)
+	}
+
+	return tx, nil
+}

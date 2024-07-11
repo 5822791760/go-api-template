@@ -27,6 +27,34 @@ definitions:
     - bio
     - name
     type: object
+  reqs.CreateBook:
+    properties:
+      amount:
+        minimum: 0
+        type: integer
+      author_id:
+        minimum: 1
+        type: integer
+      bookno:
+        maxLength: 25
+        minLength: 1
+        type: string
+      name:
+        maxLength: 25
+        minLength: 1
+        type: string
+      price:
+        minimum: 1
+        type: integer
+      summary:
+        type: string
+    required:
+    - amount
+    - author_id
+    - bookno
+    - name
+    - price
+    type: object
   reqs.SignIn:
     properties:
       email:
@@ -71,7 +99,49 @@ definitions:
         minLength: 1
         type: string
     type: object
+  reqs.UpdateBook:
+    properties:
+      amount:
+        minimum: 0
+        type: integer
+      author_id:
+        minimum: 1
+        type: integer
+      bookno:
+        maxLength: 25
+        minLength: 1
+        type: string
+      name:
+        maxLength: 25
+        minLength: 1
+        type: string
+      price:
+        minimum: 1
+        type: integer
+      summary:
+        type: string
+    required:
+    - amount
+    - author_id
+    - bookno
+    - name
+    - price
+    type: object
+  res.BuyBook:
+    properties:
+      amount:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   res.CreateAuthor:
+    properties:
+      success:
+        type: boolean
+    type: object
+  res.CreateBook:
     properties:
       success:
         type: boolean
@@ -134,6 +204,25 @@ definitions:
       success:
         type: boolean
     type: object
+  res.UpdateBook:
+    properties:
+      amount:
+        type: integer
+      author_id:
+        type: integer
+      bookno:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      summary:
+        type: string
+      updated_at:
+        type: string
+    type: object
   res.author:
     properties:
       id:
@@ -159,7 +248,7 @@ definitions:
       name:
         type: string
     type: object
-host: localhost:8080
+host: localhost:3000
 info:
   contact: {}
   description: This is a sample server Petstore server.
@@ -301,6 +390,114 @@ paths:
             items:
               $ref: '#/definitions/res.GetBooks'
             type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      security:
+      - Bearer: []
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: Create a Book
+      parameters:
+      - description: Book info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/reqs.CreateBook'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.CreateBook'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      security:
+      - Bearer: []
+      tags:
+      - books
+  /books/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update a Book
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Book info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/reqs.UpdateBook'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.UpdateBook'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
+      security:
+      - Bearer: []
+      tags:
+      - books
+  /books/{id}/buy:
+    patch:
+      consumes:
+      - application/json
+      description: Buy a Book
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.BuyBook'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrRender'
         "401":
           description: Unauthorized
           schema:
