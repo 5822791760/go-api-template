@@ -3,7 +3,7 @@ ifneq (,$(wildcard ./.env))
     export DB_HOST DB_PORT DB_DATABASE DB_USER DB_PASSWORD
 endif
 
-DB_STRING="postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?sslmode=disable"
+DB_STRING="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${DB_DATABASE}?sslmode=disable"
 
 .swag:
 	./internal/scripts/swag fmt -d ./internal/api

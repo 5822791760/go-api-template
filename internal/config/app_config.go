@@ -20,6 +20,12 @@ var AppConfig Config
 func LoadConfig() error {
 	viper.AutomaticEnv()
 
+	// viper.SetConfigFile(".env")
+	// err := viper.ReadInConfig()
+	// if err != nil {
+	// 	return err
+	// }
+
 	AppConfig = Config{
 		DBHost:     viper.GetString("POSTGRES_HOST"),
 		DBPort:     viper.GetString("POSTGRES_PORT"),
