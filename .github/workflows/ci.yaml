@@ -1,0 +1,27 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  # DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  # DOCKERHUB_KEY: ${{ secrets.DOCKER_PASSWORD }}
+  MANIFEST_TOKEN: ${{ secrets.MANIFEST_TOKEN }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout other repository
+        uses: actions/checkout@v2
+        with:
+          repository: 5822791760/go-api-manifest
+          token: ${{ secrets.MANIFEST_TOKEN }}
+          path: .
+
+      - name: Update values.yaml in other repo
+        run: |
+          ls
