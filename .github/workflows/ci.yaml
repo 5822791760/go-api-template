@@ -37,6 +37,6 @@ jobs:
 
       - name: Update manifest and push
         run: |
-          sed -i '' '14s/:latest/:${{ env.HASH }}/' app-base/deployment.yaml
+          sed -i '14s/:latest/:${{ env.HASH }}/' app-base/deployment.yaml
           git commit -m 'auto-commit-dev-${{ env.HASH }}'
           git push origin main
