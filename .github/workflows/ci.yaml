@@ -1,8 +1,5 @@
 name: CI
 
-permissions:
-  packages: write
-
 on:
   push:
     branches:
@@ -27,8 +24,8 @@ jobs:
         uses: actions/delete-package-versions@v5
         with:
           package-name: "my-go-app"
-          package-type: "docker"
-          min-versions-to-keep: 10
+          package-type: "container"
+          min-versions-to-keep: 5
 
       # - name: Build and push Image
       #   uses: mr-smithers-excellent/docker-build-push@v6
