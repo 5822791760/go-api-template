@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"github.com/5822791760/go-api-template/internal/config"
+	embed "github.com/5822791760/go-api-template/internal/db/postgres"
 	"github.com/go-jet/jet/v2/postgres"
+	"github.com/pressly/goose/v3"
 )
 
 func InitDB() (*sql.DB, error) {
@@ -24,6 +26,16 @@ func InitDB() (*sql.DB, error) {
 	// Ping the database to verify connection
 	if err := db.Ping(); err != nil {
 		return nil, err
+	}
+
+	goose.SetBaseFS(embed.MigrationFiles)
+
+	if err := goose.SetDialect("postgres"); err != nil {
+		panic(err)
+	}
+
+	if err := goose.Up(db, "migrations"); err != nil {
+		panic(err)
 	}
 
 	postgres.SetQueryLogger(func(ctx context.Context, queryInfo postgres.QueryInfo) {
