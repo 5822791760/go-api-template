@@ -9,6 +9,7 @@ env:
   # DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   # DOCKERHUB_KEY: ${{ secrets.DOCKER_PASSWORD }}
   MANIFEST_TOKEN: ${{ secrets.MANIFEST_TOKEN }}
+  HASH: ${{ github.sha }}
 
 jobs:
   build-and-deploy:
@@ -19,9 +20,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: 5822791760/go-api-manifest
-          token: ${{ secrets.MANIFEST_TOKEN }}
+          token: ${{ env.MANIFEST_TOKEN }}
           path: .
 
       - name: Update values.yaml in other repo
         run: |
-          ls
+          sed '14s/:latest/:$HASH/' app-base/deployment.yaml
+          sed '14s/:latest/:${{ env.HASH }}/' app-base/deployment.yaml
