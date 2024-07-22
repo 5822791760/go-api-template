@@ -27,6 +27,8 @@ jobs:
           registry: ghcr.io
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
+          multiPlatform: true
+          platform: linux/arm64
 
       - name: Checkout manifest repository
         uses: actions/checkout@v3
