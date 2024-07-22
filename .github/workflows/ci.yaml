@@ -20,35 +20,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build and push Image
-        uses: mr-smithers-excellent/docker-build-push@v6
+      - name: Delete Old images
+        uses: actions/delete-package-versions@v5
         with:
-          image: my-go-app
-          tags: ${{ env.HASH }}
-          registry: ghcr.io
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ env.DOCKER_PASSWORD }}
-          multiPlatform: true
-          platform: linux/arm64
+          package-name: "my-go-app"
+          package-type: "docker"
+          min-versions-to-keep: 10
 
-      - name: Checkout manifest repository
-        uses: actions/checkout@v3
-        with:
-          repository: 5822791760/go-api-manifest
-          token: ${{ env.MANIFEST_TOKEN }}
-          path: .
-          persist-credentials: false
-          fetch-depth: 0
+      # - name: Build and push Image
+      #   uses: mr-smithers-excellent/docker-build-push@v6
+      #   with:
+      #     image: my-go-app
+      #     tags: ${{ env.HASH }}
+      #     registry: ghcr.io
+      #     username: ${{ env.DOCKER_USERNAME }}
+      #     password: ${{ env.DOCKER_PASSWORD }}
+      #     multiPlatform: true
+      #     platform: linux/arm64
 
-      - name: Update manifest
-        run: |
-          sed -i 's|ghcr.io/5822791760/my-go-app:[^:]*|ghcr.io/5822791760/my-go-app:${{ env.HASH }}|g' app-base/deployment.yaml
-          echo ${{ env.DEV_ENV }} | base64 --decode > overlays/dev/.env
+      # - name: Checkout manifest repository
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: 5822791760/go-api-manifest
+      #     token: ${{ env.MANIFEST_TOKEN }}
+      #     path: .
+      #     persist-credentials: false
+      #     fetch-depth: 0
 
-      - name: Commit an push
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ env.MANIFEST_TOKEN }}
-          message: "auto-commit-dev-${{ env.HASH }}"
-          branch: "main"
-          repository: 5822791760/go-api-manifest
+      # - name: Update manifest
+      #   run: |
+      #     sed -i 's|ghcr.io/5822791760/my-go-app:[^:]*|ghcr.io/5822791760/my-go-app:${{ env.HASH }}|g' app-base/deployment.yaml
+      #     echo ${{ env.DEV_ENV }} | base64 --decode > overlays/dev/.env
+
+      # - name: Commit an push
+      #   uses: actions-js/push@master
+      #   with:
+      #     github_token: ${{ env.MANIFEST_TOKEN }}
+      #     message: "auto-commit-dev-${{ env.HASH }}"
+      #     branch: "main"
+      #     repository: 5822791760/go-api-manifest
