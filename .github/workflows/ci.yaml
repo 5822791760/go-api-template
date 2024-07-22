@@ -47,3 +47,4 @@ jobs:
           github_token: ${{ env.MANIFEST_TOKEN }}
           message: "auto-commit-dev-${{ env.HASH }}"
           branch: "main"
+          repository: 5822791760/go-api-manifest
