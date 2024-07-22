@@ -25,5 +25,4 @@ jobs:
 
       - name: Update values.yaml in other repo
         run: |
-          sed '14s/:latest/:$HASH/' app-base/deployment.yaml
           sed '14s/:latest/:${{ env.HASH }}/' app-base/deployment.yaml
