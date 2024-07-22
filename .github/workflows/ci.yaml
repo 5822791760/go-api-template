@@ -6,23 +6,37 @@ on:
       - main
 
 env:
-  # DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  # DOCKERHUB_KEY: ${{ secrets.DOCKER_PASSWORD }}
   MANIFEST_TOKEN: ${{ secrets.MANIFEST_TOKEN }}
   HASH: ${{ github.sha }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout other repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build and push Image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: ghcr.io/5822791760/my-go-app
+          tags: ${{ env.HASH }}
+          registry: ghcr.io
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Checkout manifest repository
+        uses: actions/checkout@v3
         with:
           repository: 5822791760/go-api-manifest
           token: ${{ env.MANIFEST_TOKEN }}
           path: .
 
-      - name: Update values.yaml in other repo
+      - name: Update manifest and push
         run: |
-          sed '14s/:latest/:${{ env.HASH }}/' app-base/deployment.yaml
+          sed -i '' '14s/:latest/:${{ env.HASH }}/' app-base/deployment.yaml
+          git commit -m 'auto-commit-dev-${{ env.HASH }}'
+          git push origin main
