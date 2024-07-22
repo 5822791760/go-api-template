@@ -22,7 +22,7 @@ jobs:
       - name: Build and push Image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          image: ghcr.io/5822791760/my-go-app
+          image: my-go-app
           tags: ${{ env.HASH }}
           registry: ghcr.io
           username: ${{ env.DOCKER_USERNAME }}
@@ -35,8 +35,12 @@ jobs:
           token: ${{ env.MANIFEST_TOKEN }}
           path: .
 
-      - name: Update manifest and push
+      - name: Update manifest
         run: |
           sed -i '14s/:latest/:${{ env.HASH }}/' app-base/deployment.yaml
-          git commit -m 'auto-commit-dev-${{ env.HASH }}'
-          git push origin main
+
+      - name: Commit an push
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ env.MANIFEST_TOKEN }}
+          message: "auto-commit-dev-${{ env.HASH }}"
