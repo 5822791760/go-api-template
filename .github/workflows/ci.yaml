@@ -10,6 +10,7 @@ env:
   HASH: ${{ github.sha }}
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DEV_ENV: ${{ secrets.DEV_ENV }}
 
 jobs:
   build-and-deploy:
@@ -42,6 +43,7 @@ jobs:
       - name: Update manifest
         run: |
           sed -i 's|ghcr.io/5822791760/my-go-app:[^:]*|ghcr.io/5822791760/my-go-app:${{ env.HASH }}|g' app-base/deployment.yaml
+          echo ${{ env.DEV_ENV }} | base64 --decode > overlays/dev/.env
 
       - name: Commit an push
         uses: actions-js/push@master
