@@ -6,11 +6,11 @@ endif
 DB_STRING="postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?sslmode=disable"
 
 .swag:
-	./cmd/swag fmt
-	./cmd/swag init -q
+	./internal/scripts/swag fmt -d ./internal/api
+	./internal/scripts/swag init -q -g cmd/app/main.go
 
 .wait-for-pg:
-	./cmd/wait-for-postgres.sh
+	./internal/scripts/wait-for-postgres.sh
 
 up:
 	docker-compose up -d
@@ -19,16 +19,16 @@ down:
 	docker-compose down --remove-orphans
 
 dev: up .swag .wait-for-pg db-up
-	./cmd/air -c .air.toml
+	./internal/scripts/air -c .air.toml
 
 build:
-	go build -o ./cmd/api main.go
+	go build -o ./internal/scripts ./cmd/app
 
 start:
-	./cmd/api
+	./internal/scripts/api
 
 gen:
-	./cmd/jet -dsn=${DB_STRING} -schema=public -path=./.gen
+	./internal/scripts/jet -dsn=${DB_STRING} -schema=public -path=./internal/db
 
 drop-db:
 	docker-compose up -d postgres
@@ -39,16 +39,16 @@ drop-db:
 reset-db: drop-db db-up gen
 
 db-status:
-	./cmd/goose -dir=".gen/migrations" postgres ${DB_STRING} status
+	./internal/scripts/goose -dir="./internal/db/postgres/migrations" postgres ${DB_STRING} status
 
 db-up:
-	./cmd/goose -dir=".gen/migrations" postgres ${DB_STRING} up
+	./internal/scripts/goose -dir="./internal/db/postgres/migrations" postgres ${DB_STRING} up
 
 db-down:
-	./cmd/goose -dir=".gen/migrations" postgres ${DB_STRING} down
+	./internal/scripts/goose -dir="./internal/db/postgres/migrations" postgres ${DB_STRING} down
 
 db-redo:
-	./cmd/goose -dir=".gen/migrations" postgres ${DB_STRING} redo
+	./internal/scripts/goose -dir="./internal/db/postgres/migrations" postgres ${DB_STRING} redo
 
 db-new:
-	./cmd/goose -dir=".gen/migrations" postgres ${DB_STRING} create ${name} sql
+	./internal/scripts/goose -dir="./internal/db/postgres/migrations" postgres ${DB_STRING} create ${name} sql

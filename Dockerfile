@@ -16,7 +16,7 @@ RUN go mod download
 COPY . .
 
 
-RUN go build -o main .
+RUN go build -o . ./cmd/app
 
 ###################
 # PRODUCTION
@@ -25,17 +25,8 @@ FROM alpine:latest AS production
 
 WORKDIR /app
 
-COPY --from=build /app/main .
+COPY --from=build /app/app .
 
-# ========================================
-# This command is for running image on local only
-# remove if not using image in local
+EXPOSE 3000
 
-COPY .env .
-RUN export $(cat .env | xargs)
-ENV DB_HOST=host.docker.internal
-# ========================================
-
-EXPOSE 8080
-
-CMD ["./main"]
+CMD ["./app"]
