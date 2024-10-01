@@ -28,12 +28,28 @@ func (h UserHandler) FindOne(w http.ResponseWriter, r *http.Request) {
 		coreutil.WriteError(w, err)
 	}()
 
-	id, err := coreutil.GetParamInt(r, "id")
+	id, err := coreutil.GetIDParam(r)
 	if err != nil {
 		return
 	}
 
 	res, err := h.userUsecase.FindOne(ctx, id)
+	if err != nil {
+		return
+	}
+
+	coreutil.WriteJSON(w, http.StatusOK, res)
+}
+
+func (h UserHandler) FindAll(w http.ResponseWriter, r *http.Request) {
+	var err apperr.Err
+	ctx := coreutil.GetContext(r, h.db)
+
+	defer func() {
+		coreutil.WriteError(w, err)
+	}()
+
+	res, err := h.userUsecase.FindAll(ctx)
 	if err != nil {
 		return
 	}

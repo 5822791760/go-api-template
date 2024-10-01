@@ -8,25 +8,25 @@ import (
 
 // ============================== Response =============================
 
-type GetOneResp struct {
-	ID    int    `json:"id"`
+type FindOneResp struct {
+	ID    int32  `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }
 
 // ============================== Usecase ==============================
 
-func (u userUsecase) FindOne(ctx context.Context, id int) (GetOneResp, apperr.Err) {
+func (u userUsecase) FindOne(ctx context.Context, id int64) (FindOneResp, apperr.Err) {
 	user, err := u.userRepo.FindOne(ctx, id)
 	if err != nil {
-		return GetOneResp{}, apperr.NewInternalServerErr(err)
+		return FindOneResp{}, apperr.NewInternalServerErr(err)
 	}
 
 	if user == nil {
-		return GetOneResp{}, apperr.NewUserNotFoundErr()
+		return FindOneResp{}, apperr.NewUserNotFoundErr()
 	}
 
-	return GetOneResp{
+	return FindOneResp{
 		ID:    user.ID,
 		Name:  user.Name,
 		Email: user.Email,

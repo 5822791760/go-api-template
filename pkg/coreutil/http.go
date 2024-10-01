@@ -59,6 +59,15 @@ func GetParamInt(r *http.Request, key string) (int, apperr.Err) {
 	return data, nil
 }
 
+func GetIDParam(r *http.Request) (int64, apperr.Err) {
+	id, err := GetParamInt(r, "id")
+	if err != nil {
+		return 0, err
+	}
+
+	return int64(id), nil
+}
+
 func GetQuery(r *http.Request, key string) (string, apperr.Err) {
 	query := r.URL.Query()
 	data := query.Get(key)

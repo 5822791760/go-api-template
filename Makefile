@@ -4,7 +4,8 @@ ifneq (,$(wildcard ./.env))
 endif
 
 DB_STRING="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable"
-MIGRATION_DIR="./internal/backend//db/migrations/hr"
+MIGRATION_DIR="./internal/backend/db/migrations/hr"
+JET_DIR="./internal/backend/db"
 
 .wait-for-pg:
 	./scripts/wait-for-postgres.sh
@@ -31,7 +32,7 @@ start:
 	./scripts/api
 
 gen:
-	./scripts/jet -dsn=${DB_STRING} -path=./internal/db/schema
+	./scripts/jet -dsn=${DB_STRING} -path=${JET_DIR}
 
 drop-db:
 	docker-compose up -d postgres

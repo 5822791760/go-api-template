@@ -26,6 +26,7 @@ func InitRoutes(r *chi.Mux, db *sql.DB) error {
 
 	r.Route("/api", func(r chi.Router) {
 		r.Route("/v1", func(r chi.Router) {
+			r.Get("/users", authorHandler.FindAll)
 			r.Get("/users/{id}", authorHandler.FindOne)
 		})
 	})

@@ -18,5 +18,6 @@ func NewUserUsecase(userRepo repos.UserRepo) userUsecase {
 }
 
 type UserUsecase interface {
-	FindOne(ctx context.Context, id int) (GetOneResp, apperr.Err)
+	FindOne(ctx context.Context, id int64) (FindOneResp, apperr.Err)
+	FindAll(ctx context.Context) ([]FindAllResp, apperr.Err)
 }

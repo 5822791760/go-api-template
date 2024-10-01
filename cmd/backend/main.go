@@ -10,7 +10,7 @@ import (
 	"syscall"
 
 	"github.com/5822791760/hr/internal/backend/configs"
-	"github.com/5822791760/hr/internal/backend/db/migrations"
+	database "github.com/5822791760/hr/internal/backend/db"
 	"github.com/5822791760/hr/internal/backend/routes"
 	"github.com/5822791760/hr/pkg/dbutil"
 	"github.com/go-chi/chi/v5"
@@ -33,7 +33,7 @@ func main() {
 	}
 	defer db.Close()
 
-	err = dbutil.AutoMigrate(db, migrations.NewHrMigration)
+	err = dbutil.AutoMigrate(db, database.NewHrMigration)
 	if err != nil {
 		panic(err)
 	}
