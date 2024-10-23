@@ -1,0 +1,22 @@
+meta {
+  name: st
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/users/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "name": "rober",
+    "bio": "test123"
+  }
+}
